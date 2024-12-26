@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>计算金额</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #ffffff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      border-radius: 8px;
+    }
+    p {
+      font-size: 16px;
+      color: #555;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #333;
+    }
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      display: block;
+      width: 100%;
+      background-color: #007bff;
+      color: white;
+      padding: 10px 15px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>计算金额</h1>
+  <div class="container">
+    <p>基础金额：50</p>
+    <label for="difficulty">难度选择：</label>
+    <select id="difficulty">
+      <option value="1">难度低</option>
+      <option value="2.5">难度中</option>
+      <option value="3.5">难度高</option>
+      <option value="5">复杂</option>
+    </select>
+
+    <label for="duration">总耗时选择：</label>
+    <select id="duration">
+      <option value="1">1天及以内</option>
+      <option value="2">2天</option>
+      <option value="3">3天</option>
+      <option value="4">4天</option>
+      <option value="5">5天及以上</option>
+    </select>
+
+    <label for="deadline">项目截止剩余时间：</label>
+    <select id="deadline">
+      <option value="3">一天</option>
+      <option value="2">2天</option>
+      <option value="1.5">3-4天</option>
+      <option value="1">5天及以上</option>
+    </select>
+
+    <label for="report">报告输出的复杂或规范程度（报告要求）：</label>
+    <select id="report">
+      <option value="1">无要求</option>
+      <option value="1.5">适中</option>
+      <option value="2">规范</option>
+      <option value="3">要求高</option>
+    </select>
+
+    <label for="discount">折扣：</label>
+    <select id="discount">
+      <option value="1">无折扣</option>
+      <option value="0.9">九折</option>
+      <option value="0.8">八折</option>
+      <option value="0.7">七折</option>
+    </select>
+
+    <button onclick="calculateAmount()">确定</button>
+    <p id="result"></p>
+  </div>
+
+  <script>
+    function calculateAmount() {
+      const baseAmount = 30;
+      const difficulty = parseFloat(document.getElementById("difficulty").value);
+      const duration = parseFloat(document.getElementById("duration").value);
+      const deadline = parseFloat(document.getElementById("deadline").value);
+      const report = parseFloat(document.getElementById("report").value);
+      const discount = parseFloat(document.getElementById("discount").value);
+      const totalAmount = baseAmount * difficulty * duration * deadline * report * discount;
+
+      document.getElementById("result").innerText = `总金额为：${totalAmount}`;
+    }
+  </script>
+</body>
+</html>
